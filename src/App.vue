@@ -20,7 +20,7 @@ import Greet from "./components/Greet.vue";
       </a>
     </div>
 
-    <p>Click on the Tauri, Vite, and Vue logos to learn more.</p>
+    <p>Space may be the final frontier but it's made in a Hollywood basement.</p>
 
     <p>
       Recommended IDE setup:

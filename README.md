@@ -1,3 +1,0 @@
-# jellyjam
-
-Jellyfin client
