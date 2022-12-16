@@ -1,3 +1,3 @@
-# jellyPls
+# jellyjam
 
 Jellyfin client

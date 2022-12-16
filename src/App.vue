@@ -37,7 +37,7 @@ import Greet from "./components/Greet.vue";
       >
     </p>
 
-    <Greet />
+    <greet />
   </div>
 </template>
 
