@@ -1,6 +1,6 @@
 #+TITLE: Jellyfren
 
-[[./src/apu.gif]]
+[[./public/apu.gif]]
 
 Jellyfin client built with [[https://tauri.app/][Tauri]], a free and open source Electron alternative without bloat nor the memory hog nor anything else that comes with Chromium.
 
