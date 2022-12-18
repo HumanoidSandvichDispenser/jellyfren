@@ -1140,7 +1140,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "jellyjam"
+name = "jellyfren"
 version = "0.0.0"
 dependencies = [
  "serde",

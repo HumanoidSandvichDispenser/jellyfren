@@ -1,4 +1,6 @@
-#+TITLE: jellyjam
+#+TITLE: Jellyfren
+
+[[./src/apu.gif]]
 
 Jellyfin client built with [[https://tauri.app/][Tauri]], a free and open source Electron alternative without bloat nor the memory hog nor anything else that comes with Chromium.
 
@@ -14,7 +16,7 @@ npm run tauri dev
 
 ** Emacs
 
-Install ~volar-html~ language server with ~lsp-mode~'s language server manager.
+Install ~lsp-volar~ package.
 
 ** Neovim
 

@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "jellyjam",
+    "productName": "jellyfren",
     "version": "0.0.0"
   },
   "tauri": {
@@ -62,7 +62,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "jellyjam",
+        "title": "jellyfren",
         "width": 800
       }
     ]
