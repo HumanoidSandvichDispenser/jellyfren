@@ -1,48 +1,27 @@
 <script setup lang="ts">
-import SongItem from "./components/SongItem.vue";
-import Song from "./song";
-import { computed } from "vue";
-import { useStore } from "vuex";
-import draggable from "vuedraggable";
+import store from "./store";
+import router from "./router";
 
-const store = useStore();
-
-//const playlist = computed(() => store.state.currentPlaylist);
-const playlist = computed({
-    get: (): Song[] => store.state.currentPlaylist,
-    set: (value: Song[]) => store.commit("SET_CURRENT_PLAYLIST", value)
+store.dispatch.jellyfin.init().then(() => {
+    if (router.currentRoute.value.path == "/") {
+        router.push("/home");
+    }
+}).catch(() => {
+    router.push("/login");
 });
-
-function playSongByIndex(index: number) {
-    store.commit("PLAY_SONG_BY_INDEX", index);
-}
 </script>
 
 <template>
-    <div class="container">
-        <h1>Now Playing ({{ playlist.length }})</h1>
-        <draggable
-            v-model="playlist"
-            item-key="id"
-        >
-            <template #item="{ element, index }">
-                <song-item
-                    v-bind="element"
-                    :artist="element.artist"
-                    :index="index"
-                    @play="playSongByIndex(index)"
-                />
-            </template>
-        </draggable>
-        <!--greet /-->
-    </div>
+    <router-view />
 </template>
 
 <style>
 :root {
-    --bg0: #0d1117;
-    --bg1: #161b22;
-    --bg2: #21262d;
+    /*--bg-dark: #0a0b0b;*/
+    --bg-dark: #0d1117;
+    --bg0: #161b22;
+    --bg1: #21262d;
+    --bg2: #2b323b;
     --fg0: #ecf2f8;
     --fg1: #c6cdd5;
     --fg2: #89929b;
@@ -53,6 +32,7 @@ function playSongByIndex(index: number) {
     /*--cyan: #a2d2fb;*/
     --blue: #77bdfb;
     --magenta: #cea5fb;
+    --jellyfin-gradient: linear-gradient(35deg, var(--blue), var(--magenta));
 }
 
 body,
@@ -64,5 +44,39 @@ body,
 body {
     margin: 0;
     min-height: 100vh;
+}
+
+h1 {
+    margin: 0;
+    padding: 16px;
+    text-align: center;
+}
+
+input,
+button {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--fg0);
+    background-color: var(--bg-dark);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+    transition-duration: 200ms;
+}
+
+input:focus {
+    border-color: var(--magenta);
+}
+
+button.accent {
+    background-color: var(--magenta);
+    color: var(--bg0);
+}
+
+button.accent:hover {
+    background-color: var(--bg0);
+    color: var(--fg0);
 }
 </style>

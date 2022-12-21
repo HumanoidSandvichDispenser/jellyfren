@@ -9,6 +9,14 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+fn set_store(key: &str, val: &str) {
+
+}
+
+fn get_store(key: &str) -> &str {
+    ""
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![greet])

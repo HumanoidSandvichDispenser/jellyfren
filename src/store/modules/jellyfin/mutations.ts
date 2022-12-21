@@ -1,41 +1,88 @@
+import axios, { AxiosInstance } from "axios";
 import JellyfinState from "./jellyfin-state";
-import Client from "@/jellyfin/client";
-import Credentials from "@/jellyfin/credentials";
+import {
+    Configuration,
+    ItemsApi,
+    LibraryApi,
+    SessionApi,
+    UserApi,
+    UserLibraryApi,
+    UserViewsApi,
+} from "@jellyfin/client-axios";
+import { defineMutations } from "direct-vuex";
+import getters from "./getters";
 
-const mutations = {
-    initClient(state: JellyfinState) {
-        const credentialsStr = window.localStorage.getItem("credentials");
-        const credentials = JSON.parse(credentialsStr ?? "{}") as Credentials;
-        console.log(credentials.user);
-        state.client = new Client(
-            state.protocol,
-            state.address,
-            state.port,
-            credentials.accessToken,
-            credentials.user
-        );
-        state.protocol = credentials.protocol ?? "";
-        state.address = credentials.address ?? "";
-        state.port = credentials.port ?? 8096;
-        state.username = credentials.username ?? "";
-        console.log(credentials);
+const mutations = defineMutations<JellyfinState>()({
+    assign(state, newState: JellyfinState) {
+        Object.assign(state, newState);
     },
-    setProtocol(state: JellyfinState, protocol: string) {
+    setInfo(
+        state,
+        payload: {
+            protocol: string;
+            address: string;
+            port: number;
+            username: string;
+            password: string;
+        }
+    ) {
+        console.log("Set info");
+        console.log(payload);
+        state.protocol = payload.protocol;
+        state.address = payload.address;
+        state.port = payload.port;
+        state.username = payload.username;
+        state.password = payload.password;
+    },
+    setProtocol(state, protocol: string) {
         state.protocol = protocol;
     },
-    setAddress(state: JellyfinState, address: string) {
+    setAddress(state, address: string) {
         state.address = address;
     },
-    setPort(state: JellyfinState, port: number) {
+    setPort(state, port: number) {
         state.port = port;
     },
-    setUsername(state: JellyfinState, username: string) {
+    setUsername(state, username: string) {
         state.username = username;
-        console.log(state.username);
     },
-    setPassword(state: JellyfinState, password: string) {
+    setPassword(state, password: string) {
         state.password = password;
     },
-};
+    setUserId(state, userId: string) {
+        state.userId = userId;
+    },
+    setAccessToken(state, accessToken: string) {
+        console.log("Access token set.");
+        state.accessToken = accessToken;
+    },
+    setConfiguration(state, config: Configuration) {
+        console.log("Login configuration updated.");
+        state.configuration = config;
+        if (config.username) {
+            state.userId = config.username;
+        }
+        const configuration = state.configuration;
+        const url = config.basePath;
+        const token = config.apiKey;
+        const ax = axios.create({
+            headers: {
+                Authorization: token,
+                ["X-Emby-Authorization"]: token
+            }
+        });
+        state.libraryApi = new LibraryApi(configuration, url, ax);
+        state.userApi = new UserApi(configuration, url, ax);
+        state.userViewsApi = new UserViewsApi(configuration, url, ax);
+        state.sessionApi = new SessionApi(configuration, url, ax);
+        state.userLibraryApi = new UserLibraryApi(configuration, url, ax);
+        state.itemsApi = new ItemsApi(configuration, url, ax);
+    },
+    setAxios(state, instance: AxiosInstance) {
+        state.axios = instance;
+    },
+    setHeaders(state, headers: string) {
+    }
+});
 
 export default mutations;

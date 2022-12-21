@@ -11,14 +11,11 @@ const props = defineProps({
 </script>
 
 <template>
-    <div
-        ref="song-item"
-        class="song-item"
-    >
+    <div class="song-item">
         <div class="song-info">
             <div class="title">
                 {{ title }}
-                <span v-if="isPlaying">(Currently playing)</span>
+                <span v-if="isPlaying">(currently playing)</span>
             </div>
             <div class="artist">{{ artist }}</div>
         </div>
@@ -71,8 +68,9 @@ const props = defineProps({
 .song-actions button {
     background-color: var(--bg0);
     color: var(--fg0);
-    margin: 4px;
+    margin: 0 4px;
     transition-duration: 200ms;
+    text-align: center;
 }
 
 .song-actions button:hover {
