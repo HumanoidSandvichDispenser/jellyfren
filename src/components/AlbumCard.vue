@@ -1,36 +1,61 @@
 <script setup lang="ts">
-import { computed, defineProps } from "vue";
+import { computed, defineProps, PropType } from "vue";
 import { RouterLink } from "vue-router";
 import store from "@/store";
+import { BaseItemDto } from "@jellyfin/client-axios";
 
 const props = defineProps({
-    imageId: String,
+    id: String,
     albumName: String,
-    albumUrl: String,
     artistName: String,
-    artistUrl: String,
+    item: {
+        type: Object as PropType<BaseItemDto>,
+        required: true
+    },
+});
+
+const albumUrl = computed(() => "/list/" + props.id);
+const artistUrl = computed(() => {
+    if (props.item && props.item.AlbumArtists) {
+        const albumArtists = props.item.AlbumArtists;
+        if (albumArtists.length > 0) {
+            const id = props.item.AlbumArtists[0].Id;
+            if (id) {
+                return "/library/" + id + "?type=artist";
+            }
+        }
+    }
+    return "/";
 });
 
 const imageUrl = computed(() => {
-    const imageId = props.imageId;
+    const id = props.id;
     const baseUrl = store.state.jellyfin.configuration.basePath;
-    return `${baseUrl}/Items/${imageId}/Images/Primary?fillWidth=128`;
+    return `${baseUrl}/Items/${id}/Images/Primary?fillWidth=128`;
 });
+
+function imageFallback($event: Event) {
+    if ($event.target instanceof HTMLImageElement) {
+        $event.target.src = "https://cdn.7tv.app/emote/6309cf2ea78179df357449f3/4x.webp";
+    }
+}
 </script>
 
 <template>
     <div class="album card">
         <div class="image">
-            <img :src="imageUrl" />
+            <img :src="imageUrl" @error="imageFallback" />
         </div>
         <div class="footer">
             <div class="primary-text">
-                <router-link to="/home">
+                <router-link :to="albumUrl">
                     {{ albumName }}
                 </router-link>
             </div>
             <div class="secondary-text">
-                <router-link to="/home">
+                <router-link
+                    :to="artistUrl"
+                >
                     {{ artistName }}
                 </router-link>
             </div>
@@ -47,14 +72,21 @@ const imageUrl = computed(() => {
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
-.album .image {
-    margin-bottom: 0;
-}
-
-.album img {
+.album.card img {
     display: block;
     width: 192px;
     height: 192px;
+    border-radius: 8px;
+}
+
+.album.card img:hover {
+    cursor: pointer;
+    filter: brightness(50%);
+    transition-duration: 200ms;
+}
+
+.album .image {
+    margin-bottom: 0;
 }
 
 .album .footer {

@@ -35,19 +35,19 @@ function playSongByIndex(index: number) {
                 item-key="id"
             >
                 <template #item="{ element, index }">
-                    <song-item
+                    <!--song-item
                         :title="element.title"
                         :artist="element.artist"
                         :index="index"
                         :is-in-playlist="isPlaylist"
                         :is-playing="element.isPlaying"
                         @play="playSongByIndex(index)"
-                    />
+                    /-->
                 </template>
             </draggable>
         </div>
         <div v-else class="songs">
-            <song-item
+            <!--song-item
                 v-for="(song, i) in songs"
                 :title="song.title"
                 :artist="song.artist"
@@ -55,7 +55,7 @@ function playSongByIndex(index: number) {
                 :is-in-playlist="isPlaylist"
                 :is-playing="song.isPlaying"
                 @play="playSongByIndex(i)"
-            />
+            /-->
         </div>
         <!--greet /-->
     </div>

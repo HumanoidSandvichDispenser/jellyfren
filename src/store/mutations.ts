@@ -31,7 +31,16 @@ const mutations = {
         } else {
             state.items[payload.id] = payload.item;
         }
-    }
+    },
+    setAudio(state: RootState, audio: HTMLAudioElement) {
+        state.audio = audio;
+    },
+    setCurrentSong(state: RootState, song: BaseItemDto) {
+        state.currentSong = song;
+    },
+    setIsPlaying(state: RootState, isPlaying: boolean) {
+        state.isPlaying = isPlaying;
+    },
 };
 
 export default mutations;

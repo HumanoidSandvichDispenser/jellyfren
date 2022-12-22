@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, Ref } from "vue";
+import { computed, ref, Ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import store from "../store";
-import { BaseItemDto } from "@jellyfin/client-axios";
+import {
+    BaseItemDto, ItemsApiGetItemsByUserIdRequest
+} from "@jellyfin/client-axios";
 import AlbumCard from "../components/AlbumCard.vue";
 
 const route = useRoute();
 const id = computed(() => route.params["id"] as string);
+const queryType = computed(() => route.query["type"] as string);
 const name = computed(() => {
     let item = store.state.items[id.value];
     if (item) {
@@ -18,41 +21,68 @@ const name = computed(() => {
 const albums: Ref<BaseItemDto[]> = ref([]);
 
 // fetch info about the current library
-store.state.jellyfin.userLibraryApi?.getItem({
-    userId: store.state.jellyfin.userId,
-    itemId: id.value
-}).then((res) => {
-    store.commit.setItem({ id: id.value, item: res.data });
-});
+function fetchCurrentLibrary() {
+    store.state.jellyfin.userLibraryApi?.getItem({
+        userId: store.state.jellyfin.userId,
+        itemId: id.value,
+    }).then((res) => {
+        store.commit.setItem({ id: id.value, item: res.data });
+    });
+}
 
 // fetch albums
-store.state.jellyfin.itemsApi?.getItemsByUserId({
-    userId: store.state.jellyfin.userId,
-    includeItemTypes: ["MusicAlbum"],
-    parentId: id.value,
-}).then((res) => {
-    if (res.data.Items) {
-        res.data.Items.forEach(item => {
-            if (item.Id) {
-                store.commit.setItem({ id: item.Id, item: item });
-            }
-        });
-        albums.value = res.data.Items;
-    }
-    console.log(res.data);
-})
+function fetchAlbums() {
+    const params: ItemsApiGetItemsByUserIdRequest = {
+        userId: store.state.jellyfin.userId,
+        includeItemTypes: ["MusicAlbum"],
+        recursive: true,
+        parentId: queryType.value == "artist" ? undefined : id.value,
+        sortBy: ["SortName"],
+        albumArtistIds: []
+    };
 
-console.log(id.value);
+    // if we're querying an artist, then filter through album artist id
+    if (queryType.value) {
+        params.albumArtistIds?.push(id.value);
+    }
+
+    store.state.jellyfin.itemsApi?.getItemsByUserId(params).then((res) => {
+        if (res.data.Items) {
+            res.data.Items.forEach(item => {
+                if (item.Id) {
+                    store.commit.setItem({ id: item.Id, item: item });
+                }
+            });
+            albums.value = res.data.Items;
+        }
+        console.log(res.data);
+    });
+}
+
+watch(
+    () => route.params,
+    () => {
+        fetchCurrentLibrary();
+        albums.value.length = 0;
+        fetchAlbums();
+        console.log(queryType);
+    }
+);
+
+fetchCurrentLibrary();
+fetchAlbums();
 </script>
 
 <template>
     <div class="library">
         <h1>{{ name }}</h1>
+        <h2>Albums</h2>
         <div class="albums">
             <album-card
                 v-for="(album, i) in albums"
                 :key="i"
-                :image-id="album.Id"
+                :id="album.Id"
+                :item="album"
                 :album-name="album.Name ?? ''"
                 :artist-name="album.AlbumArtist ?? ''"
             />

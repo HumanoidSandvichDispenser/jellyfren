@@ -1,0 +1,66 @@
+<script setup lang="ts">
+import { useRoute } from "vue-router";
+import router from "../router";
+
+function back() {
+    router.back();
+}
+
+function forward() {
+    router.forward();
+}
+</script>
+
+<template>
+    <nav class="navigation">
+        <div class="left">
+            <button @click="back">
+                &lsaquo;
+            </button>
+            <button @click="forward">
+                &rsaquo;
+            </button>
+        </div>
+        <div class="space"></div>
+        <div class="right"></div>
+    </nav>
+</template>
+
+<style>
+.navigation {
+    display: flex;
+    width: 100%;
+}
+.navigation > div {
+    padding: 8px;
+}
+
+.navigation button {
+    background-color: unset;
+    box-shadow: unset;
+    border: unset;
+    outline: unset;
+    font-size: 24px;
+    height: 48px;
+    width: 48px;
+    padding: 0;
+    margin: 0;
+}
+
+.navigation button:hover {
+    border: unset;
+    outline: unset;
+}
+
+.navigation .left {
+    align-self: flex-start;
+}
+
+.navigation .space {
+    flex: 1;
+}
+
+.navigation .right {
+    align-self: flex-end;
+}
+</style>

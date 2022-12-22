@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import JellyfinState from "./jellyfin-state";
 import {
+    AudioApi,
     Configuration,
     ItemsApi,
     LibraryApi,
@@ -77,12 +78,8 @@ const mutations = defineMutations<JellyfinState>()({
         state.sessionApi = new SessionApi(configuration, url, ax);
         state.userLibraryApi = new UserLibraryApi(configuration, url, ax);
         state.itemsApi = new ItemsApi(configuration, url, ax);
+        state.audioApi = new AudioApi(configuration, url, ax);
     },
-    setAxios(state, instance: AxiosInstance) {
-        state.axios = instance;
-    },
-    setHeaders(state, headers: string) {
-    }
 });
 
 export default mutations;

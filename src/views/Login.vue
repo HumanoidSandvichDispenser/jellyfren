@@ -31,7 +31,9 @@ function login() {
 
 <template>
     <div class="login">
-        <h1>Login to Jellyfin</h1>
+        <center>
+            <h1>Login to Jellyfin</h1>
+        </center>
         <div>
             <input placeholder="Username" v-model="username" />
         </div>

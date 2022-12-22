@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
-import Client from "../../../jellyfin/client";
 import {
+    AudioApi,
     Configuration,
     ItemsApi,
     LibraryApi,
@@ -27,4 +27,5 @@ export default interface JellyfinState {
     sessionApi?: SessionApi;
     userLibraryApi?: UserLibraryApi;
     itemsApi?: ItemsApi;
+    audioApi?: AudioApi;
 };

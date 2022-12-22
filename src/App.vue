@@ -1,7 +1,19 @@
 <script setup lang="ts">
+import { computed, watch } from "vue";
 import store from "./store";
 import router from "./router";
+import Navigation from "./components/Navigation.vue";
+import AudioController from "./components/AudioController.vue";
 
+const isPlaying = computed(() => store.state.isPlaying);
+watch(
+    () => store.state.audio?.paused,
+    (newVal, prevVal) => {
+        console.log(prevVal + " -> " + newVal);
+    }
+);
+
+store.commit.setAudio(new Audio());
 store.dispatch.jellyfin.init().then(() => {
     if (router.currentRoute.value.path == "/") {
         router.push("/home");
@@ -12,7 +24,19 @@ store.dispatch.jellyfin.init().then(() => {
 </script>
 
 <template>
-    <router-view />
+    <div class="content">
+        <aside class="sidebar">
+
+        </aside>
+        <main>
+            <navigation />
+            <router-view />
+        </main>
+    </div>
+    <div class="footer">
+        <audio-controller />
+    </div>
+    <audio></audio>
 </template>
 
 <style>
@@ -32,16 +56,50 @@ store.dispatch.jellyfin.init().then(() => {
     /*--cyan: #a2d2fb;*/
     --blue: #77bdfb;
     --magenta: #cea5fb;
+    --accent: var(--magenta);
     --jellyfin-gradient: linear-gradient(35deg, var(--blue), var(--magenta));
 }
 
 body,
 #app {
+    overflow: hidden;
     background-color: var(--bg0);
     color: var(--fg0);
 }
 
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.content {
+    overflow: hidden;
+    display: flex;
+    flex-grow: 1;
+}
+
+.footer {
+    flex-grow: 0;
+    width: 100%;
+}
+
+aside.sidebar {
+    flex-basis: 256px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    background-color: var(--bg-dark);
+}
+
+main {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+}
+
 body {
+    height: 100vh;
+    overflow: hidden;
     margin: 0;
     min-height: 100vh;
     font-family: Arial, sans-serif;
@@ -49,8 +107,16 @@ body {
 
 h1 {
     margin: 0;
-    padding: 16px;
+    padding: 16px 0;
+    text-align: left;
+}
+
+h1.center {
     text-align: center;
+}
+
+h2 {
+    font-weight: 500;
 }
 
 input,
@@ -68,11 +134,11 @@ button {
 }
 
 input:focus {
-    border-color: var(--magenta);
+    border-color: var(--accent);
 }
 
 button.accent {
-    background-color: var(--magenta);
+    background-color: var(--accent);
     color: var(--bg0);
 }
 
@@ -81,16 +147,31 @@ button.accent:hover {
     color: var(--fg0);
 }
 
-a {
+a,
+a:visited {
     color: var(--fg0);
     text-decoration: none;
 }
 
-a:hover {
+a:hover,
+a:visited:hover {
+    color: var(--accent);
     text-decoration: underline;
 }
 
-a:visited {
-    color: var(--fg0);
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg0);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bg1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
 }
 </style>

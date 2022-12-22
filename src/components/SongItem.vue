@@ -1,23 +1,29 @@
 <script setup lang="ts">
-import SongInfo from "../song-info";
+import { PropType } from "vue";
+import { BaseItemDto } from "@jellyfin/client-axios";
 
 const props = defineProps({
-    title: String,
-    artist: String,
+    song: {
+        type: Object as PropType<BaseItemDto>,
+        required: true,
+    },
     isInPlaylist: Boolean,
     isPlaying: Boolean,
-    index: Number
+    index: Number,
 });
 </script>
 
 <template>
     <div class="song-item">
+        <div class="song-index" v-if="props.song.IndexNumber">
+            {{ props.song.IndexNumber }}
+        </div>
         <div class="song-info">
             <div class="title">
-                {{ title }}
+                {{ props.song.Name }}
                 <span v-if="isPlaying">(currently playing)</span>
             </div>
-            <div class="artist">{{ artist }}</div>
+            <div class="artist">{{ props.song.AlbumArtist }}</div>
         </div>
         <div class="divider">
         </div>
@@ -55,6 +61,12 @@ const props = defineProps({
 
 .song-item .divider {
     flex: 1;
+}
+
+.song-index {
+    margin-right: 1em;
+    width: 2em;
+    text-align: right;
 }
 
 .song-info {

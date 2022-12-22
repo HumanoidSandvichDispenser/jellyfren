@@ -5,4 +5,7 @@ export interface RootState {
     currentPlaylist: Song[],
     items: { [id: string]: BaseItemDto },
     currentLibrary: BaseItemDto,
+    currentSong: BaseItemDto,
+    isPlaying: boolean,
+    audio?: HTMLAudioElement,
 };

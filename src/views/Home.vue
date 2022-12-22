@@ -47,7 +47,7 @@ store.state.jellyfin.userViewsApi?.getUserViews({
         <div class="libraries">
             <library-item
                 v-for="(library, i) in libraries"
-                :name="library.Name"
+                :name="library.Name ?? ''"
                 :key="i"
                 @click="onLibraryItemClicked(library)"
             />
