@@ -1,7 +1,8 @@
 import Song from "../song";
-import Client from "@/jellyfin/client";
+import { BaseItemDto } from "@jellyfin/client-axios";
 
 export interface RootState {
     currentPlaylist: Song[],
-    currentLibrary: string,
+    items: { [id: string]: BaseItemDto },
+    currentLibrary: BaseItemDto,
 };

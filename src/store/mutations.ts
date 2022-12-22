@@ -1,3 +1,4 @@
+import { BaseItemDto } from "@jellyfin/client-axios";
 import Song from "../song";
 import { RootState } from "./types";
 
@@ -21,6 +22,16 @@ const mutations = {
             song.isPlaying = i == index;
         });
     },
-}
+    setCurrentLibrary(state: RootState, library: BaseItemDto) {
+        state.currentLibrary = library;
+    },
+    setItem(state: RootState, payload: { id: string, item: BaseItemDto }) {
+        if (payload.item == undefined) {
+            delete state.items[payload.id];
+        } else {
+            state.items[payload.id] = payload.item;
+        }
+    }
+};
 
 export default mutations;

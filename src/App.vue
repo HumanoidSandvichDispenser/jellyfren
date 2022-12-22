@@ -44,6 +44,7 @@ body,
 body {
     margin: 0;
     min-height: 100vh;
+    font-family: Arial, sans-serif;
 }
 
 h1 {
@@ -77,6 +78,19 @@ button.accent {
 
 button.accent:hover {
     background-color: var(--bg0);
+    color: var(--fg0);
+}
+
+a {
+    color: var(--fg0);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:visited {
     color: var(--fg0);
 }
 </style>

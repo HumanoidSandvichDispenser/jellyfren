@@ -21,7 +21,8 @@ const {
                 new Song("F O R S E N B A J S", "2O3A"),
                 new Song("WHEN THE IMPOSTOR IS SNUS", "Karabast"),
             ],
-            currentLibrary: "",
+            items: {},
+            currentLibrary: {},
         }
     },
     mutations,

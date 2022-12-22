@@ -7,23 +7,15 @@ import router from "@/router";
 
 //let libraries: BaseItemDto[] = [];
 let libraries: Ref<BaseItemDto[]> = ref([]);
-const api = () => store.state.jellyfin;
+const username = computed(() => store.state.jellyfin.username);
 
-api().userViewsApi?.getUserViews({
-    userId: api().userId,
-}).then((result) => {
-    let items = result.data.Items;
-    items?.filter(item => item.CollectionType == "music").forEach(item => {
-        libraries.value.push(item);
-        console.log(item);
-    });
-});
+function onLibraryItemClicked(library: BaseItemDto) {
+    if (!library.Id) {
+        return;
+    }
 
-const username = computed(() => api().username);
-
-function onLibraryItemClicked(id: string) {
-    console.log("Loading library " + id);
-    router.push("/library/" + id);
+    console.log("Loading library " + library.Id);
+    router.push("/library/" + library.Id);
 }
 
 function logout() {
@@ -31,6 +23,21 @@ function logout() {
         router.push("/login");
     });
 }
+
+store.state.jellyfin.userViewsApi?.getUserViews({
+    userId: store.state.jellyfin.userId,
+}).then((result) => {
+    let items = result.data.Items;
+    items?.filter(item => item.CollectionType == "music").forEach(item => {
+        const id = item.Id;
+        if (id) {
+            libraries.value.push(item);
+            console.log(item);
+            store.commit.setItem({ id, item });
+        }
+    });
+});
+
 </script>
 
 <template>
@@ -42,7 +49,7 @@ function logout() {
                 v-for="(library, i) in libraries"
                 :name="library.Name"
                 :key="i"
-                @click="onLibraryItemClicked(library.Id)"
+                @click="onLibraryItemClicked(library)"
             />
         </div>
         <h2>Info</h2>
