@@ -43,6 +43,7 @@ store.dispatch.jellyfin.init().then(() => {
     /*--bg-dark: #0a0b0b;*/
     --bg-dark: #0d1117;
     --bg0: #161b22;
+    --bg-nav: #161b22aa;
     --bg1: #21262d;
     --bg2: #2b323b;
     --fg0: #ecf2f8;

@@ -30,7 +30,13 @@ function forward() {
 .navigation {
     display: flex;
     width: 100%;
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-nav);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
+
 .navigation > div {
     padding: 8px;
 }
