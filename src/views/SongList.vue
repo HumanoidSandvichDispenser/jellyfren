@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { computed, ref, Ref } from "vue";
+import { computed, defineProps, ref, Ref } from "vue";
 import store from "../store";
 import { useRoute } from "vue-router";
 import { BaseItemDto } from "@jellyfin/client-axios";
 import SongItem from "../components/SongItem.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
+
+const props = defineProps({
+    baseUrl: String
+});
 
 const route = useRoute();
 const id = computed(() => route.params["id"] as string);
@@ -15,12 +19,12 @@ const name = computed(() => {
     }
     return "Loading";
 });
-const artist = computed(() => {
+const artists = computed(() => {
     let item = store.state.items[id.value];
     if (item) {
-        return item.AlbumArtist;
+        return item.AlbumArtists;
     }
-    return "";
+    return [];
 });
 const imageUrl = computed(() => {
     return store.state.jellyfin.configuration.basePath + "/Items/" + id.value +
@@ -94,9 +98,27 @@ fetchItems();
                         {{ name }}
                     </div>
                     <div>
-                        <span>{{ artist }}</span>
-                        <span v-if="item.ProductionYear">
+                        <router-link
+                            v-for="(artist, i) in artists"
+                            :key="i"
+                            :to="'/library/' + artist.Id + '?type=artist'"
+                        >
+                            <span v-if="i > 0">, </span>{{ artist.Name }}
+                        </router-link>
+                        <span class="other" v-if="item.ProductionYear">
                             &middot; {{ item.ProductionYear }}
+                        </span>
+                        <span
+                            class="other"
+                            v-if="item.Genres && item.Genres.length > 0"
+                        >
+                            &middot; {{ item.Genres.join(", ") }}
+                        </span>
+                        <span
+                            class="other"
+                            v-if="item.Tags && item.Tags.length > 0"
+                        >
+                            &middot; {{ item.Tags.join(", ") }}
                         </span>
                     </div>
                 </div>
@@ -139,5 +161,10 @@ fetchItems();
     margin-bottom: 8px;
     font-size: 32px;
     font-weight: 700;
+    line-height: 1em;
+}
+
+.list-info .details .other {
+    color: var(--fg2);
 }
 </style>
