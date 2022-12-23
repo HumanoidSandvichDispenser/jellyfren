@@ -15,7 +15,19 @@ const name = computed(() => {
     }
     return "Loading";
 });
+const artist = computed(() => {
+    let item = store.state.items[id.value];
+    if (item) {
+        return item.AlbumArtist;
+    }
+    return "";
+});
+const imageUrl = computed(() => {
+    return store.state.jellyfin.configuration.basePath + "/Items/" + id.value +
+           "/Images/Primary?width=192";
+});
 
+const item: Ref<BaseItemDto> = ref({});
 const songs: Ref<BaseItemDto[]> = ref([]);
 const isLoading = ref(true);
 
@@ -30,6 +42,7 @@ function fetchCurrentItemList() {
         userId: store.state.jellyfin.userId,
         itemId: id.value,
     }).then((res) => {
+        item.value = res.data;
         store.commit.setItem({ id: id.value, item: res.data });
     });
 }
@@ -72,7 +85,22 @@ fetchItems();
 <template>
     <div class="song-list">
         <div class="songs">
-            <h1>{{ name }}</h1>
+            <div class="list-info">
+                <div class="cover">
+                    <img :src="imageUrl" />
+                </div>
+                <div class="details">
+                    <div class="name">
+                        {{ name }}
+                    </div>
+                    <div>
+                        <span>{{ artist }}</span>
+                        <span v-if="item.ProductionYear">
+                            &middot; {{ item.ProductionYear }}
+                        </span>
+                    </div>
+                </div>
+            </div>
             <loading-spinner v-if="isLoading" />
             <song-item
                 v-for="(song, i) in songs"
@@ -83,3 +111,33 @@ fetchItems();
         </div>
     </div>
 </template>
+
+<style>
+.songs > h1 {
+    padding: 16px;
+}
+
+.list-info {
+    display: flex;
+    padding: 16px;
+}
+
+.list-info .cover img {
+    max-width: 192px;
+    max-height: 192px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.list-info .details {
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-end;
+}
+
+.list-info .details .name {
+    margin-bottom: 8px;
+    font-size: 32px;
+    font-weight: 700;
+}
+</style>
