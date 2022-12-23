@@ -17,7 +17,7 @@ const {
         return {
             currentPlaylist: [],
             items: {},
-            currentLibrary: {},
+            libraries: [],
             currentSong: {},
             isPlaying: false
         }

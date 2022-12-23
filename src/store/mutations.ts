@@ -3,27 +3,17 @@ import Song from "../song";
 import { RootState } from "./types";
 
 const mutations = {
-    addToPlaylist(state: RootState, song: Song) {
+    addToPlaylist(state: RootState, song: BaseItemDto) {
         state.currentPlaylist.push(song);
     },
     removeFromPlaylist(state: RootState, index: number) {
         state.currentPlaylist.splice(index, 1);
     },
-    setCurrentPlaylist(state: RootState, playlist: Song[]) {
+    setCurrentPlaylist(state: RootState, playlist: BaseItemDto[]) {
         state.currentPlaylist = playlist;
     },
-    playSong(state: RootState, newSong: Song) {
-        state.currentPlaylist.forEach((song: Song, i: number) => {
-            song.isPlaying = song == newSong;
-        });
-    },
-    playSongByIndex(state: RootState, index: number) {
-        state.currentPlaylist.forEach((song: Song, i: number) => {
-            song.isPlaying = i == index;
-        });
-    },
-    setCurrentLibrary(state: RootState, library: BaseItemDto) {
-        state.currentLibrary = library;
+    setLibraries(state: RootState, libraries: BaseItemDto[]) {
+        state.libraries = libraries;
     },
     setItem(state: RootState, payload: { id: string, item: BaseItemDto }) {
         if (payload.item == undefined) {

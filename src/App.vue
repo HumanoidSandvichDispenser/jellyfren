@@ -2,6 +2,7 @@
 import { computed, watch } from "vue";
 import store from "./store";
 import router from "./router";
+import Sidebar from "./components/Sidebar.vue";
 import Navigation from "./components/Navigation.vue";
 import AudioController from "./components/AudioController.vue";
 
@@ -25,9 +26,7 @@ store.dispatch.jellyfin.init().then(() => {
 
 <template>
     <div class="content">
-        <aside class="sidebar">
-
-        </aside>
+        <sidebar />
         <main>
             <navigation />
             <router-view />
@@ -84,14 +83,7 @@ body,
     width: 100%;
 }
 
-aside.sidebar {
-    flex-basis: 256px;
-    flex-grow: 0;
-    flex-shrink: 0;
-    background-color: var(--bg-dark);
-}
-
-main {
+.content > main {
     flex: 1;
     width: 100%;
     overflow-y: auto;
@@ -106,6 +98,7 @@ body {
 }
 
 h1 {
+    font-size: 48px;
     margin: 0;
     padding: 16px 0;
     text-align: left;
@@ -168,7 +161,7 @@ a:visited:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--bg1);
+    background: var(--bg2);
 }
 
 ::-webkit-scrollbar-thumb:hover {

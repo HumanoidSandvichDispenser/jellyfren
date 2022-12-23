@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Song from "../song";
 import SongItem from "../components/SongItem.vue";
 import { computed, ref, Ref } from "vue";
 import SongList from "../components/SongList.vue";
@@ -21,8 +20,8 @@ let songs: Ref<BaseItemDto[]> = ref([]);
 
 //const playlist = computed(() => store.state.currentPlaylist);
 const playlist = computed({
-    get: (): Song[] => store.state.currentPlaylist,
-    set: (value: Song[]) => store.commit.setCurrentPlaylist(value)
+    get: (): BaseItemDto[] => store.state.currentPlaylist,
+    set: (value: BaseItemDto[]) => store.commit.setCurrentPlaylist(value)
 });
 
 store.state.jellyfin.itemsApi?.getItemsByUserId({
@@ -49,12 +48,13 @@ store.state.jellyfin.itemsApi?.getItemsByUserId({
 });
 
 function playSong(song: BaseItemDto) {
+    store.commit.setCurrentPlaylist(songs.value);
     store.dispatch.playSong(song);
 }
 </script>
 
 <template>
-    <div class="song-list-details">
+    <div class="song-list">
         <div class="songs">
             <song-item
                 v-for="(song, i) in songs"

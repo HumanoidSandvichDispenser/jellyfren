@@ -58,7 +58,8 @@ function login() {
         <div v-show="insecure" class="warning">
             <strong>Warning:</strong>
             the server you are connecting to is not protected by HTTPS. Please
-            ensure this server is accessible through your local network.
+            ensure the server <code v-if="address != ''">{{ address }}</code> is
+            not public facing and only accessible by your local network.
         </div>
     </div>
 </template>

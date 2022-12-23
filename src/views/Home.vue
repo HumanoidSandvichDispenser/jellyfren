@@ -28,7 +28,13 @@ store.state.jellyfin.userViewsApi?.getUserViews({
     userId: store.state.jellyfin.userId,
 }).then((result) => {
     let items = result.data.Items;
-    items?.filter(item => item.CollectionType == "music").forEach(item => {
+    let libraryItems = items?.filter(item => item.CollectionType == "music");
+
+    if (!libraryItems) {
+        return;
+    }
+
+    libraryItems.forEach(item => {
         const id = item.Id;
         if (id) {
             libraries.value.push(item);
@@ -36,6 +42,9 @@ store.state.jellyfin.userViewsApi?.getUserViews({
             store.commit.setItem({ id, item });
         }
     });
+
+    libraries.value = libraryItems;
+    store.commit.setLibraries(libraryItems);
 });
 
 </script>

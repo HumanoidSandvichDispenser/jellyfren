@@ -4,6 +4,7 @@ import Login from "../views/Login.vue";
 import Home from "../views/Home.vue";
 import Library from "../views/Library.vue";
 import SongList from "../views/SongList.vue";
+import NowPlaying from "../views/NowPlaying.vue";
 
 const routes: RouteRecordRaw[] = [
     {
@@ -28,8 +29,13 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: "/list/:id",
-        name: "Details",
+        name: "List",
         component: SongList
+    },
+    {
+        path: "/nowplaying",
+        name: "Now Playing",
+        component: NowPlaying
     },
 ];
 

@@ -7,6 +7,9 @@ import { BaseItemDto } from "@jellyfin/client-axios";
 const actions = defineActions({
     playSong(context, song: BaseItemDto) {
         const { state, commit, dispatch } = getContext(context);
+        if (state.currentPlaylist.indexOf(song) == -1) {
+            throw "Song should be in the current playlist before playing.";
+        }
         const id = song.Id;
         const basePath = state.jellyfin.configuration.basePath;
         const url = `${basePath}/Audio/${id}/stream`;
@@ -38,7 +41,7 @@ const actions = defineActions({
             commit.setIsPlaying(false);
             commit.setCurrentSong({});
         }
-    }
+    },
 });
 
 const getContext = (context: ActionContext<RootState, RootState>) =>
