@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
+import { useRoute } from "vue-router";
 import store from "./store";
 import router from "./router";
 import Sidebar from "./components/Sidebar.vue";
 import Navigation from "./components/Navigation.vue";
 import AudioController from "./components/AudioController.vue";
+
+const route = useRoute();
 
 const isPlaying = computed(() => store.state.isPlaying);
 watch(
@@ -32,7 +35,7 @@ store.dispatch.jellyfin.init().then(() => {
             <router-view />
         </main>
     </div>
-    <div class="footer">
+    <div class="footer" v-if="route.path != '/nowplaying'">
         <audio-controller />
     </div>
     <audio></audio>
