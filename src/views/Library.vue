@@ -6,6 +6,7 @@ import {
     BaseItemDto, ItemsApiGetItemsByUserIdRequest
 } from "@jellyfin/client-axios";
 import AlbumCard from "../components/AlbumCard.vue";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
 
 const route = useRoute();
 const id = computed(() => route.params["id"] as string);
@@ -19,6 +20,7 @@ const name = computed(() => {
 });
 
 const albums: Ref<BaseItemDto[]> = ref([]);
+const isLoading = ref(true);
 
 // fetch info about the current library
 function fetchCurrentLibrary() {
@@ -32,6 +34,7 @@ function fetchCurrentLibrary() {
 
 // fetch albums
 function fetchAlbums() {
+    isLoading.value = true;
     const params: ItemsApiGetItemsByUserIdRequest = {
         userId: store.state.jellyfin.userId,
         includeItemTypes: ["MusicAlbum"],
@@ -47,6 +50,7 @@ function fetchAlbums() {
     }
 
     store.state.jellyfin.itemsApi?.getItemsByUserId(params).then((res) => {
+        isLoading.value = false;
         if (res.data.Items) {
             res.data.Items.forEach(item => {
                 if (item.Id) {
@@ -78,6 +82,7 @@ fetchAlbums();
         <h1>{{ name }}</h1>
         <h2>Albums</h2>
         <div class="albums">
+            <loading-spinner v-if="isLoading" />
             <album-card
                 v-for="(album, i) in albums"
                 :key="i"

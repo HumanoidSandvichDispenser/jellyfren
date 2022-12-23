@@ -4,9 +4,11 @@ import store from "@/store";
 import LibraryItem from "../components/LibraryItem.vue";
 import { BaseItemDto, BaseItemDtoQueryResult } from "@jellyfin/client-axios";
 import router from "@/router";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
 
 //let libraries: BaseItemDto[] = [];
 let libraries: Ref<BaseItemDto[]> = ref([]);
+let isLoading = ref(true);
 const username = computed(() => store.state.jellyfin.username);
 
 function onLibraryItemClicked(library: BaseItemDto) {
@@ -43,6 +45,7 @@ store.state.jellyfin.userViewsApi?.getUserViews({
         }
     });
 
+    isLoading.value = false;
     libraries.value = libraryItems;
     store.commit.setLibraries(libraryItems);
 });
@@ -54,6 +57,7 @@ store.state.jellyfin.userViewsApi?.getUserViews({
         <h1>Home</h1>
         <h2>Libraries</h2>
         <div class="libraries">
+            <loading-spinner v-if="isLoading" />
             <library-item
                 v-for="(library, i) in libraries"
                 :name="library.Name ?? ''"

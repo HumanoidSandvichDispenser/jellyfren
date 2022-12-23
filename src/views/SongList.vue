@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import SongItem from "../components/SongItem.vue";
 import { computed, ref, Ref } from "vue";
-import SongList from "../components/SongList.vue";
 import store from "../store";
 import { useRoute } from "vue-router";
 import { BaseItemDto } from "@jellyfin/client-axios";
+import SongItem from "../components/SongItem.vue";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
 
 const route = useRoute();
 const id = computed(() => route.params["id"] as string);
@@ -16,7 +16,8 @@ const name = computed(() => {
     return "Loading";
 });
 
-let songs: Ref<BaseItemDto[]> = ref([]);
+const songs: Ref<BaseItemDto[]> = ref([]);
+const isLoading = ref(true);
 
 //const playlist = computed(() => store.state.currentPlaylist);
 const playlist = computed({
@@ -34,6 +35,7 @@ function fetchCurrentItemList() {
 }
 
 function fetchItems() {
+    isLoading.value = true;
     store.state.jellyfin.itemsApi?.getItemsByUserId({
         userId: store.state.jellyfin.userId,
         parentId: id.value,
@@ -44,6 +46,7 @@ function fetchItems() {
         ],
     }).then((res) => {
         if (res.data.Items) {
+            isLoading.value = false;
             if (res.data.Items) {
                 res.data.Items.forEach(item => {
                     if (item.Id) {
@@ -70,6 +73,7 @@ fetchItems();
     <div class="song-list">
         <div class="songs">
             <h1>{{ name }}</h1>
+            <loading-spinner v-if="isLoading" />
             <song-item
                 v-for="(song, i) in songs"
                 :song="song"
