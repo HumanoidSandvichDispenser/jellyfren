@@ -48,8 +48,10 @@ function forward() {
 }
 
 .navigation button:hover {
+    color: var(--accent);
     border: unset;
     outline: unset;
+    transition-duration: 200ms;
 }
 
 .navigation .left {

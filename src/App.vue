@@ -153,11 +153,11 @@ a:visited:hover {
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg0);
+    background: var(--bg-dark);
 }
 
 ::-webkit-scrollbar-thumb {

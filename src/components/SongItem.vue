@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PropType } from "vue";
+import { computed, PropType } from "vue";
 import { BaseItemDto } from "@jellyfin/client-axios";
 
 const props = defineProps({
@@ -10,6 +10,13 @@ const props = defineProps({
     isInPlaylist: Boolean,
     isPlaying: Boolean,
     index: Number,
+});
+
+const artists = computed(() => {
+    if (props.song.Artists) {
+        return props.song.Artists.join(", ");
+    }
+    return props.song.AlbumArtist;
 });
 </script>
 
@@ -23,7 +30,7 @@ const props = defineProps({
                 {{ props.song.Name }}
                 <span v-if="isPlaying">(currently playing)</span>
             </div>
-            <div class="artist">{{ props.song.AlbumArtist }}</div>
+            <div class="artist">{{ artists }}</div>
         </div>
         <div class="divider">
         </div>

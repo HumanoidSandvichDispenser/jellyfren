@@ -24,38 +24,52 @@ const playlist = computed({
     set: (value: BaseItemDto[]) => store.commit.setCurrentPlaylist(value)
 });
 
-store.state.jellyfin.itemsApi?.getItemsByUserId({
-    userId: store.state.jellyfin.userId,
-    recursive: true,
-    parentId: id.value,
-    sortBy: [
-        "ParentIndexNumber",
-        "IndexNumber",
-        "SortName",
-    ],
-}).then((res) => {
-    if (res.data.Items) {
+function fetchCurrentItemList() {
+    store.state.jellyfin.userLibraryApi?.getItem({
+        userId: store.state.jellyfin.userId,
+        itemId: id.value,
+    }).then((res) => {
+        store.commit.setItem({ id: id.value, item: res.data });
+    });
+}
+
+function fetchItems() {
+    store.state.jellyfin.itemsApi?.getItemsByUserId({
+        userId: store.state.jellyfin.userId,
+        parentId: id.value,
+        sortBy: [
+            "ParentIndexNumber",
+            "IndexNumber",
+            "SortName",
+        ],
+    }).then((res) => {
         if (res.data.Items) {
-            res.data.Items.forEach(item => {
-                if (item.Id) {
-                    store.commit.setItem({ id: item.Id, item: item });
-                }
-            });
-            songs.value = res.data.Items;
+            if (res.data.Items) {
+                res.data.Items.forEach(item => {
+                    if (item.Id) {
+                        store.commit.setItem({ id: item.Id, item: item });
+                    }
+                });
+                songs.value = res.data.Items;
+            }
+            console.log(res.data);
         }
-        console.log(res.data);
-    }
-});
+    });
+}
 
 function playSong(song: BaseItemDto) {
     store.commit.setCurrentPlaylist(songs.value);
     store.dispatch.playSong(song);
 }
+
+fetchCurrentItemList();
+fetchItems();
 </script>
 
 <template>
     <div class="song-list">
         <div class="songs">
+            <h1>{{ name }}</h1>
             <song-item
                 v-for="(song, i) in songs"
                 :song="song"
