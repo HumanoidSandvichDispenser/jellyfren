@@ -1,15 +1,24 @@
 <script setup lang="ts">
 import { computed } from "@vue/reactivity";
-import SongItem from "../components/SongItem.vue";
 import { BaseItemDto } from "@jellyfin/client-axios";
+import SongItem from "../components/SongItem.vue";
+import draggable from "vuedraggable";
 import store from "../store";
 import AudioController from "../components/AudioController.vue";
 
-const songs = computed(() => store.state.currentPlaylist);
+const songs = computed({
+    get: (): BaseItemDto[] => store.state.currentPlaylist,
+    set: (value: BaseItemDto[]): void => store.commit.setCurrentPlaylist(value)
+});
+
 const currentSong = computed(() => store.state.currentSong);
 
 function playSong(song: BaseItemDto) {
     store.dispatch.playSong(song);
+}
+
+function removeByIndex(index: number) {
+    store.commit.removeFromPlaylist(index);
 }
 </script>
 
@@ -17,14 +26,21 @@ function playSong(song: BaseItemDto) {
     <div class="now-playing">
         <h1>Now Playing</h1>
         <audio-controller />
-	    <div class="songs">
-            <song-item
-                v-for="(song, i) in songs"
-                :song="song"
-                :index="i"
-                :is-playing="song.Id == currentSong.Id"
-                @play="playSong(song)"
-            />
+        <div class="songs">
+            <draggable
+                v-model="songs"
+                item-key="id"
+            >
+                <template #item="{ element, index }">
+                    <song-item
+                        :song="element"
+                        :is-playing="element.Id == currentSong.Id"
+                        is-in-playlist
+                        @play="playSong(element)"
+                        @remove="removeByIndex(index)"
+                    />
+                </template>
+            </draggable>
         </div>
     </div>
 </template>

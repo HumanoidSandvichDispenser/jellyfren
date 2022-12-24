@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, PropType } from "vue";
 import { BaseItemDto } from "@jellyfin/client-axios";
+import store from "../store";
 
 const props = defineProps({
     song: {
@@ -18,12 +19,21 @@ const artists = computed(() => {
     }
     return props.song.AlbumArtist;
 });
+
+const imageUrl = computed(() => {
+    const id = props.song.AlbumId;
+    const baseUrl = store.state.jellyfin.configuration.basePath;
+    return `${baseUrl}/Items/${id}/Images/Primary?fillWidth=128`;
+});
 </script>
 
 <template>
     <div class="song-item">
-        <div class="song-index" v-if="props.song.IndexNumber">
+        <div class="song-index" v-if="props.song.IndexNumber && !isInPlaylist">
             {{ props.song.IndexNumber }}
+        </div>
+        <div class="song-album" v-if="isInPlaylist">
+            <img :src="imageUrl" />
         </div>
         <div class="song-info">
             <div class="title">
@@ -39,7 +49,7 @@ const artists = computed(() => {
             <button v-if="isInPlaylist" @click="$emit('remove')">
                 Remove
             </button>
-            <button v-else>Add to Playlist</button>
+            <button v-else @click="$emit('add')">Add to Queue</button>
         </div>
     </div>
 </template>
@@ -51,6 +61,7 @@ const artists = computed(() => {
     background-color: var(--bg0);
     padding: 8px;
     transition-duration: 200ms;
+    height: 48px;
 }
 
 .song-item .song-actions {
@@ -74,6 +85,15 @@ const artists = computed(() => {
     margin-right: 1em;
     width: 2em;
     text-align: right;
+}
+
+.song-album {
+    margin-right: 8px;
+}
+
+.song-album > img {
+    width: 48px;
+    height: 48px;;
 }
 
 .song-info {

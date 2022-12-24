@@ -82,6 +82,17 @@ function playSong(song: BaseItemDto) {
     store.dispatch.playSong(song);
 }
 
+function add(song: BaseItemDto) {
+    store.commit.addToPlaylist(song);
+}
+
+function remove(song: BaseItemDto) {
+    const index = store.state.currentPlaylist.indexOf(song);
+    if (index > -1) {
+        store.commit.removeFromPlaylist(index);
+    }
+}
+
 fetchCurrentItemList();
 fetchItems();
 </script>
@@ -138,6 +149,8 @@ fetchItems();
                 :song="song"
                 :index="i"
                 @play="playSong(song)"
+                @remove="remove(song)"
+                @add="add(song)"
             />
         </div>
     </div>
