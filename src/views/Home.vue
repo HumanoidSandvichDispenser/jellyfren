@@ -7,8 +7,9 @@ import router from "@/router";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
 
 //let libraries: BaseItemDto[] = [];
-let libraries: Ref<BaseItemDto[]> = ref([]);
+//let libraries: Ref<BaseItemDto[]> = ref([]);
 let isLoading = ref(true);
+const libraries = computed(() => store.state.libraries);
 const username = computed(() => store.state.jellyfin.username);
 
 function onLibraryItemClicked(library: BaseItemDto) {
@@ -22,7 +23,7 @@ function onLibraryItemClicked(library: BaseItemDto) {
 
 function logout() {
     // `finally` so it runs whether or not we are authenticated
-    store.dispatch.jellyfin.deauthenticate().then(() => {
+    store.dispatch.jellyfin.deauthenticate(undefined).then(() => {
 
     }).catch(() => {
 
@@ -31,28 +32,8 @@ function logout() {
     });
 }
 
-store.state.jellyfin.userViewsApi?.getUserViews({
-    userId: store.state.jellyfin.userId,
-}).then((result) => {
-    let items = result.data.Items;
-    let libraryItems = items?.filter(item => item.CollectionType == "music");
-
-    if (!libraryItems) {
-        return;
-    }
-
-    libraryItems.forEach(item => {
-        const id = item.Id;
-        if (id) {
-            libraries.value.push(item);
-            console.log(item);
-            store.commit.setItem({ id, item });
-        }
-    });
-
+store.dispatch.jellyfin.fetchLibraries(undefined).then(() => {
     isLoading.value = false;
-    libraries.value = libraryItems;
-    store.commit.setLibraries(libraryItems);
 });
 
 </script>
@@ -62,7 +43,6 @@ store.state.jellyfin.userViewsApi?.getUserViews({
         <h1>Home</h1>
         <h2>Libraries</h2>
         <div class="libraries">
-            <loading-spinner v-if="isLoading" />
             <library-item
                 v-for="(library, i) in libraries"
                 :name="library.Name ?? ''"

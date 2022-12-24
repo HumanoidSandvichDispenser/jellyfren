@@ -14,6 +14,13 @@ const libraries = computed(() => store.state.libraries);
         <router-link to="/nowplaying">
             <button>Now Playing</button>
         </router-link>
+        <h1>Libraries</h1>
+        <router-link
+            v-for="library in libraries"
+            :to="'/library/' + library.Id"
+        >
+            <button>{{ library.Name }}</button>
+        </router-link>
     </aside>
 </template>
 

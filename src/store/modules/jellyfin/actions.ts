@@ -17,6 +17,28 @@ export default defineActions({
             commit.setUsername(res.data.Name);
         }
     },
+    async fetchLibraries(context) {
+        const { state, rootCommit } = getContext(context);
+        let result = await state.userViewsApi?.getUserViews({
+            userId: state.userId,
+        });
+
+        let items = result?.data.Items;
+        let libraryItems = items?.filter(item => item.CollectionType == "music");
+
+        if (!libraryItems) {
+            return;
+        }
+
+        libraryItems.forEach(item => {
+            const id = item.Id;
+            if (id) {
+                rootCommit.setItem({ id, item });
+            }
+        });
+
+        rootCommit.setLibraries(libraryItems);
+    },
     async ensureInit(context): Promise<void> {
         const { state, dispatch } = getContext(context);
         if (state.configuration.apiKey == undefined) {
