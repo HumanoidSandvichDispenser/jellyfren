@@ -113,7 +113,7 @@ fetchItems();
                     <div class="name">
                         {{ name }}
                     </div>
-                    <div>
+                    <div class="subdetails">
                         <router-link
                             v-for="(artist, i) in artists"
                             :key="i"
@@ -137,10 +137,12 @@ fetchItems();
                             &middot; {{ item.Tags.join(", ") }}
                         </span>
                     </div>
-                    <span>
-                        {{ item.ChildCount }}
-                        {{ item.ChildCount > 1 ? "songs" : "song" }}
-                    </span>
+                    <div class="subdetails">
+                        <span class="other">
+                            {{ item.ChildCount }}
+                            {{ item.ChildCount > 1 ? "songs" : "song" }}
+                        </span>
+                    </div>
                 </div>
             </div>
             <loading-spinner v-if="isLoading" />
