@@ -21,8 +21,13 @@ function onLibraryItemClicked(library: BaseItemDto) {
 }
 
 function logout() {
+    // `finally` so it runs whether or not we are authenticated
     store.dispatch.jellyfin.deauthenticate().then(() => {
-        router.push("/login");
+
+    }).catch(() => {
+
+    }).finally(() => {
+        router.replace("/login");
     });
 }
 

@@ -89,7 +89,12 @@ fetchItems();
 <template>
     <div class="song-list">
         <div class="songs">
-            <div class="list-info">
+            <div
+                class="list-info"
+                :style="{
+                    '--bg-image': `url(${imageUrl})`
+                }"
+            >
                 <div class="cover">
                     <img :src="imageUrl" />
                 </div>
@@ -140,8 +145,24 @@ fetchItems();
 }
 
 .list-info {
+    position: relative;
     display: flex;
     padding: 16px;
+}
+
+.list-info::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+}
+
+.list-info > * {
+    position: relative;
+    filter: initial;
 }
 
 .list-info .cover img {

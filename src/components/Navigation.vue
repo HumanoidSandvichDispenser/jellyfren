@@ -35,6 +35,7 @@ function forward() {
     background-color: var(--bg-nav);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    z-index: 2;
 }
 
 .navigation > div {

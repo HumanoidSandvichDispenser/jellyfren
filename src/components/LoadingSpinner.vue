@@ -37,9 +37,15 @@
 @keyframes loading-spinner {
     0% {
         transform: scaleY(1.5);
+        background-color: var(--accent);
     }
-    50%, 100% {
+    50% {
         transform: scaleY(1.0);
+        background-color: var(--accent);
+    }
+    100% {
+        transform: scaleY(1.0);
+        background-color: var(--fg0);
     }
 }
 </style>

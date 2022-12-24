@@ -97,10 +97,10 @@ export default defineActions({
     },
     async deauthenticate(context) {
         const { state, getters, commit } = getContext(context);
-        await state.sessionApi?.reportSessionEnded();
         commit.setAccessToken("");
         commit.setConfiguration(new Configuration({ }));
         window.localStorage.removeItem("jellyfin/configuration");
+        return state.sessionApi?.reportSessionEnded();
     }
 });
 

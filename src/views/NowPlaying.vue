@@ -3,6 +3,7 @@ import { computed } from "@vue/reactivity";
 import SongItem from "../components/SongItem.vue";
 import { BaseItemDto } from "@jellyfin/client-axios";
 import store from "../store";
+import AudioController from "../components/AudioController.vue";
 
 const songs = computed(() => store.state.currentPlaylist);
 const currentSong = computed(() => store.state.currentSong);
@@ -15,6 +16,7 @@ function playSong(song: BaseItemDto) {
 <template>
     <div class="now-playing">
         <h1>Now Playing</h1>
+        <audio-controller />
 	    <div class="songs">
             <song-item
                 v-for="(song, i) in songs"

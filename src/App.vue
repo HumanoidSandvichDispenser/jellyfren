@@ -10,12 +10,6 @@ import AudioController from "./components/AudioController.vue";
 const route = useRoute();
 
 const isPlaying = computed(() => store.state.isPlaying);
-watch(
-    () => store.state.audio?.paused,
-    (newVal, prevVal) => {
-        console.log(prevVal + " -> " + newVal);
-    }
-);
 
 store.commit.setAudio(new Audio());
 store.dispatch.jellyfin.init().then(() => {
@@ -23,7 +17,7 @@ store.dispatch.jellyfin.init().then(() => {
         router.push("/home");
     }
 }).catch(() => {
-    router.push("/login");
+    router.replace("/login");
 });
 </script>
 
@@ -38,7 +32,6 @@ store.dispatch.jellyfin.init().then(() => {
     <div class="footer" v-if="route.path != '/nowplaying'">
         <audio-controller />
     </div>
-    <audio></audio>
 </template>
 
 <style>
@@ -60,6 +53,7 @@ store.dispatch.jellyfin.init().then(() => {
     --blue: #77bdfb;
     --magenta: #cea5fb;
     --accent: var(--magenta);
+    --progress-bg: var(--bg2);
     --jellyfin-gradient: linear-gradient(35deg, var(--blue), var(--magenta));
 }
 
@@ -85,6 +79,8 @@ body,
 .footer {
     flex-grow: 0;
     width: 100%;
+    box-shadow: 0px -1px 4px var(--bg-dark);
+    z-index: 1;
 }
 
 .content > main {
