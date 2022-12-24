@@ -21,7 +21,13 @@ const slider: Ref<HTMLElement> = ref(null);
 const emit = defineEmits(["update:value"]);
 
 const value = computed({
-    get: (): number => props.value,
+    get: (): number => {
+        // check if it is null otherwise webkit will break
+        if (slider.value) {
+            updateProgress(props.value);
+        }
+        return props.value;
+    },
     set: (val: number): void => {
         emit("update:value", val);
         updateProgress(val);
@@ -34,9 +40,7 @@ function updateProgress(val: number) {
     const p = ((val - min) * 100) / (max - min);
     const style = slider.value.style;
     let bg = `linear-gradient(90deg, var(--accent) ${p}%, var(--bg2) ${p}%)`;
-    /*bg = "linear-gradient(90deg,black 50%,grey 50%)";*/
     style.setProperty("--slider-progress", bg);
-    console.log(slider.value.style);
 }
 
 onMounted(() => {

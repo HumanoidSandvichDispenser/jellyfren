@@ -13,11 +13,23 @@ const progress = computed({
     },
     set: (value: number): void => {
         if (store.state.audio) {
+            // TODO: this works on firefox but not on webview
+            // replace this with howler.js
             store.state.audio.currentTime = value;
         }
         progressVal.value = value;
     }
 });
+
+const runTime = computed(() => {
+    if (store.state.currentSong.RunTimeTicks) {
+        const ticks = store.state.currentSong.RunTimeTicks;
+        const ms = ticks / 10000;
+        const s = ms / 1000;
+        return s;
+    }
+    return 1;
+})
 
 const volume = computed({
     get: (): number => {
@@ -72,6 +84,11 @@ function stop() {
 function mute() {
     isMuted.value = !isMuted.value;
 }
+
+setInterval(() => {
+    progressVal.value++;
+    progressVal.value--;
+}, 100);
 </script>
 
 <template>
@@ -91,7 +108,7 @@ function mute() {
                 <button @click="stop">Stop</button>
             </div>
             <div>
-                <progress-slider v-model:value="progress" :max="100" />
+                <progress-slider v-model:value="progress" :max="runTime" />
             </div>
         </div>
         <div class="controller-section song-misc">
