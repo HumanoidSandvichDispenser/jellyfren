@@ -11,6 +11,7 @@ const props = defineProps({
     isInPlaylist: Boolean,
     isPlaying: Boolean,
     index: Number,
+    shouldShowAlbum: Boolean,
 });
 
 const artists = computed(() => {
@@ -28,44 +29,56 @@ const imageUrl = computed(() => {
 </script>
 
 <template>
-    <div class="song-item">
-        <div class="song-index" v-if="props.song.IndexNumber && !isInPlaylist">
+    <tr class="song-item">
+        <td class="song-index" v-if="props.song.IndexNumber && !isInPlaylist">
             {{ props.song.IndexNumber }}
-        </div>
-        <div class="song-album" v-if="isInPlaylist">
+        </td>
+        <td class="song-album-art" v-if="isInPlaylist">
             <img :src="imageUrl" />
-        </div>
-        <div class="song-info">
+        </td>
+        <td class="song-info">
             <div class="title">
                 {{ props.song.Name }}
                 <span v-if="isPlaying">(currently playing)</span>
             </div>
             <div class="artist">{{ artists }}</div>
-        </div>
-        <div class="divider">
-        </div>
-        <div class="song-actions">
+        </td>
+        <td class="song-album-title">
+            <div v-if="shouldShowAlbum">{{ props.song.Album }}</div>
+        </td>
+        <td class="divider">
+        </td>
+        <td class="song-actions" align="right">
             <button @click="$emit('play')">Play</button>
             <button v-if="isInPlaylist" @click="$emit('remove')">
                 Remove
             </button>
             <button v-else @click="$emit('add')">Add to Queue</button>
-        </div>
-    </div>
+        </td>
+    </tr>
 </template>
 
 <style>
 .song-item {
-    display: flex;
     color: var(--fg0);
     background-color: var(--bg0);
     padding: 8px;
     transition-duration: 200ms;
-    height: 48px;
+    height: 64px;
+}
+
+.song-item > td {
+    vertical-align: middle;
+}
+
+.song-item > td:not(:first-child) {
+    vertical-align: middle;
+    padding-left: 8px;
 }
 
 .song-item .song-actions {
-    display: none;
+    opacity: 0;
+    transition-duration: 200ms;
 }
 
 .song-item:hover {
@@ -74,30 +87,24 @@ const imageUrl = computed(() => {
 }
 
 .song-item:hover .song-actions {
-    display: flex;
-}
-
-.song-item .divider {
-    flex: 1;
+    opacity: 1;
+    transition-duration: 200ms;
 }
 
 .song-index {
-    margin-right: 1em;
+    padding-left: 16px;
     width: 2em;
-    text-align: right;
 }
 
-.song-album {
-    margin-right: 8px;
+.song-album-art {
+    width: 64px;
+    height: 64px;
 }
 
-.song-album > img {
-    width: 48px;
-    height: 48px;;
-}
-
-.song-info {
-    text-align: left;
+.song-album-art > img {
+    width: 64px;
+    height: 64px;
+    vertical-align: middle;
 }
 
 .song-info > .artist {
@@ -113,7 +120,7 @@ const imageUrl = computed(() => {
 }
 
 .song-actions button:hover {
-    background-color: var(--blue);
+    background-color: var(--accent);
     color: var(--bg0);
     transition-duration: 200ms;
 }

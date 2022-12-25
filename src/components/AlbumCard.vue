@@ -108,7 +108,7 @@ function imageFallback($event: Event) {
     color: var(--fg2);
 }
 
-.album .footer .secondary-text a {
-    color: var(--fg2);
+.album .footer .secondary-text a:hover {
+    color: var(--accent);
 }
 </style>

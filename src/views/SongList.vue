@@ -99,52 +99,52 @@ fetchItems();
 
 <template>
     <div class="song-list">
-        <div class="songs">
-            <div
-                class="list-info"
-                :style="{
-                    '--bg-image': `url(${imageUrl})`
-                }"
-            >
-                <div class="cover">
-                    <img :src="imageUrl" />
+        <div
+            class="list-info"
+            :style="{
+                '--bg-image': `url(${imageUrl})`
+            }"
+        >
+            <div class="cover">
+                <img :src="imageUrl" />
+            </div>
+            <div class="details">
+                <div class="name">
+                    {{ name }}
                 </div>
-                <div class="details">
-                    <div class="name">
-                        {{ name }}
-                    </div>
-                    <div class="subdetails">
-                        <router-link
-                            v-for="(artist, i) in artists"
-                            :key="i"
-                            :to="'/library/' + artist.Id + '?type=artist'"
-                        >
-                            <span v-if="i > 0">, </span>{{ artist.Name }}
-                        </router-link>
-                        <span class="other" v-if="item.ProductionYear">
-                            &middot; {{ item.ProductionYear }}
-                        </span>
-                        <span
-                            class="other"
-                            v-if="item.Genres && item.Genres.length > 0"
-                        >
-                            &middot; {{ item.Genres.join(", ") }}
-                        </span>
-                        <span
-                            class="other"
-                            v-if="item.Tags && item.Tags.length > 0"
-                        >
-                            &middot; {{ item.Tags.join(", ") }}
-                        </span>
-                    </div>
-                    <div class="subdetails">
-                        <span class="other">
-                            {{ item.ChildCount }}
-                            {{ item.ChildCount > 1 ? "songs" : "song" }}
-                        </span>
-                    </div>
+                <div class="subdetails">
+                    <router-link
+                        v-for="(artist, i) in artists"
+                        :key="i"
+                        :to="'/library/' + artist.Id + '?type=artist'"
+                    >
+                        <span v-if="i > 0">, </span>{{ artist.Name }}
+                    </router-link>
+                    <span class="other" v-if="item.ProductionYear">
+                        &middot; {{ item.ProductionYear }}
+                    </span>
+                    <span
+                        class="other"
+                        v-if="item.Genres && item.Genres.length > 0"
+                    >
+                        &middot; {{ item.Genres.join(", ") }}
+                    </span>
+                    <span
+                        class="other"
+                        v-if="item.Tags && item.Tags.length > 0"
+                    >
+                        &middot; {{ item.Tags.join(", ") }}
+                    </span>
+                </div>
+                <div class="subdetails">
+                    <span class="other">
+                        {{ item.ChildCount }}
+                        {{ item.ChildCount > 1 ? "songs" : "song" }}
+                    </span>
                 </div>
             </div>
+        </div>
+        <table class="songs">
             <loading-spinner v-if="isLoading" />
             <song-item
                 v-for="(song, i) in songs"
@@ -154,13 +154,17 @@ fetchItems();
                 @remove="remove(song)"
                 @add="add(song)"
             />
-        </div>
+        </table>
     </div>
 </template>
 
 <style>
 .songs > h1 {
     padding: 16px;
+}
+
+.songs {
+    border-spacing: 0;
 }
 
 .list-info {

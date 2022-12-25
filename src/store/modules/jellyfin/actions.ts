@@ -1,7 +1,7 @@
 import { defineActions, ModuleOptions } from "direct-vuex";
 import { ActionContext } from "vuex";
 import { RootState } from "@/store/types";
-import store, { moduleActionContext } from "@/store";
+import { moduleActionContext } from "@/store";
 import JellyfinState from "./jellyfin-state";
 import jellyfin from ".";
 import axios from "axios";

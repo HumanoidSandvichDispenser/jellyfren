@@ -76,7 +76,7 @@ body,
     flex-grow: 1;
 }
 
-.footer {
+#app > .footer {
     flex-grow: 0;
     width: 100%;
     box-shadow: 0px -1px 4px var(--bg-dark);

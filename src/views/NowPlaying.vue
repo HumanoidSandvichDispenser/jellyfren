@@ -26,7 +26,7 @@ function removeByIndex(index: number) {
     <div class="now-playing">
         <h1>Now Playing</h1>
         <audio-controller />
-        <div class="songs">
+        <table class="songs">
             <draggable
                 v-model="songs"
                 item-key="id"
@@ -36,17 +36,22 @@ function removeByIndex(index: number) {
                         :song="element"
                         :is-playing="element.Id == currentSong.Id"
                         is-in-playlist
+                        should-show-album
                         @play="playSong(element)"
                         @remove="removeByIndex(index)"
                     />
                 </template>
             </draggable>
-        </div>
+        </table>
     </div>
 </template>
 
 <style>
 .now-playing {
     padding: 16px;
+}
+
+.now-playing .song-item {
+
 }
 </style>
