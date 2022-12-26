@@ -5,6 +5,7 @@ import store from "../store";
 import router from "../router";
 
 const libraries = computed(() => store.state.libraries);
+const playlists = [];
 const isOpen = ref(false);
 </script>
 
@@ -32,19 +33,35 @@ const isOpen = ref(false);
                 <span class="text">Now Playing</span>
             </button>
         </router-link>
-        <h1 v-if="isOpen">Libraries</h1>
         <div v-if="isOpen">
-            <router-link
-                v-for="library in libraries"
-                :to="'/library/' + library.Id"
-            >
-                <button>
-                    <span class="icon">
-                        <bootstrap-icon icon="collection-play-fill" />
-                    </span>
-                    <span class="text">{{ library.Name }}</span>
-                </button>
-            </router-link>
+            <h1>Libraries</h1>
+            <div>
+                <router-link
+                    v-for="library in libraries"
+                    :to="'/library/' + library.Id"
+                >
+                    <button>
+                        <span class="icon">
+                            <bootstrap-icon icon="collection-play-fill" />
+                        </span>
+                        <span class="text">{{ library.Name }}</span>
+                    </button>
+                </router-link>
+            </div>
+            <h1>Playlists</h1>
+            <div>
+                <router-link
+                    v-for="playlist in playlists"
+                    :to="'/list/' + playlist.Id"
+                >
+                    <button>
+                        <span class="icon">
+                            <bootstrap-icon icon="collection-play-fill" />
+                        </span>
+                        <span class="text">{{ playlist.Name }}</span>
+                    </button>
+                </router-link>
+            </div>
         </div>
     </aside>
 </template>

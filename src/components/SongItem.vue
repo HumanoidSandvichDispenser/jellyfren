@@ -60,9 +60,11 @@ const imageUrl = computed(() => {
                 @click="$emit('remove')"
                 class="icon-button"
             >
-                <bootstrap-icon icon="dash-circle" />
+                <bootstrap-icon icon="dash-circle-fill" />
             </button>
-            <button v-else @click="$emit('add')">Add to Queue</button>
+            <button v-else @click="$emit('add')" class="icon-button">
+                <bootstrap-icon icon="plus-circle-fill" />
+            </button>
         </td>
     </tr>
 </template>
