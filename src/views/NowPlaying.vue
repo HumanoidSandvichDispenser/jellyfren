@@ -26,23 +26,23 @@ function removeByIndex(index: number) {
     <div class="now-playing">
         <h1>Now Playing</h1>
         <audio-controller />
-        <table class="songs">
-            <draggable
-                v-model="songs"
-                item-key="id"
-            >
-                <template #item="{ element, index }">
-                    <song-item
-                        :song="element"
-                        :is-playing="element.Id == currentSong.Id"
-                        is-in-playlist
-                        should-show-album
-                        @play="playSong(element)"
-                        @remove="removeByIndex(index)"
-                    />
-                </template>
-            </draggable>
-        </table>
+        <draggable
+            v-model="songs"
+            item-key="id"
+            tag="table"
+            class="songs"
+        >
+            <template #item="{ element, index }">
+                <song-item
+                    :song="element"
+                    :is-playing="element.Id == currentSong.Id"
+                    is-in-playlist
+                    should-show-album
+                    @play="playSong(element)"
+                    @remove="removeByIndex(index)"
+                />
+            </template>
+        </draggable>
     </div>
 </template>
 
@@ -51,7 +51,7 @@ function removeByIndex(index: number) {
     padding: 16px;
 }
 
-.now-playing .song-item {
-
+.now-playing .songs {
+    width: 100%;
 }
 </style>
