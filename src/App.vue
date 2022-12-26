@@ -140,6 +140,20 @@ button.accent:hover {
     color: var(--fg0);
 }
 
+button.icon-button {
+    background: none;
+    box-shadow: none;
+    font-size: 1.5em;
+    padding: 0;
+    outline: none;
+    border: none;
+}
+
+button.icon-button:hover {
+    background: none;
+    color: var(--accent);
+}
+
 a,
 a:visited {
     color: var(--fg0);

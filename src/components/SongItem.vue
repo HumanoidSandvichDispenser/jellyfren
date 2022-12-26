@@ -49,9 +49,18 @@ const imageUrl = computed(() => {
         <td class="divider">
         </td>
         <td class="song-actions" align="right">
-            <button @click="$emit('play')">Play</button>
-            <button v-if="isInPlaylist" @click="$emit('remove')">
-                Remove
+            <button @click="$emit('play')" class="icon-button">
+                <bootstrap-icon icon="play-circle-fill" />
+            </button>
+            <button class="icon-button">
+                <bootstrap-icon icon="heart-fill" />
+            </button>
+            <button
+                v-if="isInPlaylist"
+                @click="$emit('remove')"
+                class="icon-button"
+            >
+                <bootstrap-icon icon="dash-circle" />
             </button>
             <button v-else @click="$emit('add')">Add to Queue</button>
         </td>
@@ -79,6 +88,7 @@ const imageUrl = computed(() => {
 .song-item .song-actions {
     opacity: 0;
     transition-duration: 200ms;
+    padding: 8px 16px;
 }
 
 .song-item:hover {
@@ -114,7 +124,7 @@ const imageUrl = computed(() => {
 .song-actions button {
     background-color: var(--bg0);
     color: var(--fg0);
-    margin: 0 4px;
+    margin: 0 8px;
     transition-duration: 200ms;
     text-align: center;
 }
