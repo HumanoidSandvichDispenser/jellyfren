@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
 import { useRoute } from "vue-router";
-import store from "./store";
 import router from "./router";
 import Sidebar from "./components/Sidebar.vue";
 import Navigation from "./components/Navigation.vue";
 import AudioController from "./components/AudioController.vue";
+import { useStore } from "./store";
+import { useJellyfinStore } from "./store/jellyfin";
 
 const route = useRoute();
 
-const isPlaying = computed(() => store.state.isPlaying);
+const store = useStore();
+const jellyfin = useJellyfinStore();
+const isPlaying = computed(() => store.isPlaying);
 
-store.commit.setAudio(new Audio());
-store.dispatch.jellyfin.init().then(() => {
+jellyfin.init().then(() => {
     if (router.currentRoute.value.path == "/") {
         router.push("/home");
     }

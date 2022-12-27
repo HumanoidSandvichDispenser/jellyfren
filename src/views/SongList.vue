@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { computed, defineProps, ref, Ref } from "vue";
-import store from "../store";
+import { useStore } from "../store";
+import { useJellyfinStore } from "../store/jellyfin";
 import { useRoute } from "vue-router";
 import { BaseItemDto } from "@jellyfin/client-axios";
 import SongItem from "../components/SongItem.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
+
+const store = useStore();
+const jellyfin = useJellyfinStore();
 
 const props = defineProps({
     baseUrl: String
@@ -13,21 +17,21 @@ const props = defineProps({
 const route = useRoute();
 const id = computed(() => route.params["id"] as string);
 const name = computed(() => {
-    let item = store.state.items[id.value];
+    let item = store.items[id.value];
     if (item) {
         return item.Name ?? "Loading";
     }
     return "Loading";
 });
 const artists = computed(() => {
-    let item = store.state.items[id.value];
+    let item = store.items[id.value];
     if (item) {
         return item.AlbumArtists;
     }
     return [];
 });
 const imageUrl = computed(() => {
-    return store.state.jellyfin.configuration.basePath + "/Items/" + id.value +
+    return jellyfin.configuration.basePath + "/Items/" + id.value +
            "/Images/Primary?width=192";
 });
 
@@ -37,24 +41,24 @@ const isLoading = ref(true);
 
 //const playlist = computed(() => store.state.currentPlaylist);
 const playlist = computed({
-    get: (): BaseItemDto[] => store.state.currentPlaylist,
-    set: (value: BaseItemDto[]) => store.commit.setCurrentPlaylist(value)
+    get: (): BaseItemDto[] => store.currentPlaylist,
+    set: (value: BaseItemDto[]) => store.currentPlaylist = value
 });
 
 function fetchCurrentItemList() {
-    store.state.jellyfin.userLibraryApi?.getItem({
-        userId: store.state.jellyfin.userId,
+    jellyfin.userLibraryApi?.getItem({
+        userId: jellyfin.userId,
         itemId: id.value,
     }).then((res) => {
         item.value = res.data;
-        store.commit.setItem({ id: id.value, item: res.data });
+        store.setItem(id.value, res.data);
     });
 }
 
 function fetchItems() {
     isLoading.value = true;
-    store.state.jellyfin.itemsApi?.getItemsByUserId({
-        userId: store.state.jellyfin.userId,
+    jellyfin.itemsApi?.getItemsByUserId({
+        userId: jellyfin.userId,
         parentId: id.value,
         sortBy: [
             "ParentIndexNumber",
@@ -67,7 +71,7 @@ function fetchItems() {
             if (res.data.Items) {
                 res.data.Items.forEach(item => {
                     if (item.Id) {
-                        store.commit.setItem({ id: item.Id, item: item });
+                        store.setItem(item.Id, item);
                     }
                 });
                 songs.value = res.data.Items;
@@ -78,18 +82,18 @@ function fetchItems() {
 }
 
 function playSong(song: BaseItemDto) {
-    store.commit.setCurrentPlaylist(songs.value);
-    store.dispatch.playSong(song);
+    store.currentPlaylist = songs.value;
+    store.playSong(song);
 }
 
 function add(song: BaseItemDto) {
-    store.commit.addToPlaylist(song);
+    store.currentPlaylist.push(song);
 }
 
 function remove(song: BaseItemDto) {
-    const index = store.state.currentPlaylist.indexOf(song);
+    const index = store.currentPlaylist.indexOf(song);
     if (index > -1) {
-        store.commit.removeFromPlaylist(index);
+        store.removeFromPlaylist(index);
     }
 }
 
@@ -137,7 +141,7 @@ fetchItems();
                     </span>
                 </div>
                 <div class="subdetails">
-                    <span class="other">
+                    <span class="other" v-if="item.ChildCount">
                         {{ item.ChildCount }}
                         {{ item.ChildCount > 1 ? "songs" : "song" }}
                     </span>

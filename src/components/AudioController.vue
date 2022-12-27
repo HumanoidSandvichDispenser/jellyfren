@@ -1,29 +1,31 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import store from "../store";
+import { useStore } from "../store";
 import { RouterLink } from "vue-router";
 import ProgressSlider from "./ProgressSlider.vue";
 
+const store = useStore();
+
 const progress = computed({
     get: (): number => {
-        if (store.state.audio) {
-            progressVal.value = store.state.audio.currentTime;
+        if (store.audio) {
+            progressVal.value = store.audio.currentTime;
         }
         return progressVal.value;
     },
     set: (value: number): void => {
-        if (store.state.audio) {
+        if (store.audio) {
             // TODO: this works on firefox but not on webview
             // replace this with howler.js
-            store.state.audio.currentTime = value;
+            store.audio.currentTime = value;
         }
         progressVal.value = value;
     }
 });
 
 const runTime = computed(() => {
-    if (store.state.currentSong.RunTimeTicks) {
-        const ticks = store.state.currentSong.RunTimeTicks;
+    if (store.currentSong.RunTimeTicks) {
+        const ticks = store.currentSong.RunTimeTicks;
         const ms = ticks / 10000;
         const s = ms / 1000;
         return s;
@@ -33,29 +35,31 @@ const runTime = computed(() => {
 
 const volume = computed({
     get: (): number => {
-        if (store.state.audio) {
-            volumeVal.value = store.state.audio.volume;
+        if (store.audio) {
+            volumeVal.value = store.audio.volume;
         }
         return volumeVal.value;
     },
     set: (value: number): void => {
-        if (store.state.audio) {
-            store.state.audio.volume = value;
+        if (store.audio) {
+            store.audio.volume = value;
         }
         volumeVal.value = value;
     }
 });
 
+const isMutedVal = ref(false);
+
 const isMuted = computed({
     get: (): boolean => {
-        if (store.state.audio) {
-            isMutedVal.value = store.state.audio.muted;
+        if (store.audio) {
+            isMutedVal.value = store.audio.muted;
         }
         return isMutedVal.value;
     },
     set: (value: boolean): void => {
-        if (store.state.audio) {
-            store.state.audio.muted = value;
+        if (store.audio) {
+            store.audio.muted = value;
         }
         isMutedVal.value = value;
     }
@@ -63,22 +67,21 @@ const isMuted = computed({
 
 const progressVal = ref(0);
 const volumeVal = ref(1);
-const isMutedVal = ref(1);
 //setInterval(() => progressUpdate.value = true, 1000);
-const isPlaying = computed(() => store.state.isPlaying);
-const currentSong = computed(() => store.state.currentSong);
+const isPlaying = computed(() => store.isPlaying);
+const currentSong = computed(() => store.currentSong);
 const currentSongLink = computed(() => "/list/" + currentSong.value.ParentId);
 
 function play() {
-    store.dispatch.play();
+    store.play();
 }
 
 function pause() {
-    store.dispatch.pause();
+    store.pause();
 }
 
 function stop() {
-    store.dispatch.stop();
+    store.stop();
 }
 
 function mute() {

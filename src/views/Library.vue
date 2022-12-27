@@ -1,42 +1,47 @@
 <script setup lang="ts">
 import { computed, ref, Ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import store from "../store";
+import { useStore } from "@/store";
+import { useJellyfinStore } from "@/store/jellyfin";
 import {
     BaseItemDto, ItemsApiGetItemsByUserIdRequest
 } from "@jellyfin/client-axios";
 import AlbumCard from "../components/AlbumCard.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
 
+const store = useStore();
+const jellyfin = useJellyfinStore();
+
 const route = useRoute();
 const id = computed(() => route.params["id"] as string);
 const queryType = computed(() => route.query["type"] as string);
 const name = computed(() => {
-    let item = store.state.items[id.value];
+    let item = store.items[id.value];
     if (item) {
         return item.Name ?? "Loading";
     }
     return "Loading";
 });
 
-const albums: Ref<BaseItemDto[]> = ref([]);
-const isLoading = ref(true);
-
 // fetch info about the current library
 function fetchCurrentLibrary() {
-    store.state.jellyfin.userLibraryApi?.getItem({
-        userId: store.state.jellyfin.userId,
+    jellyfin.userLibraryApi?.getItem({
+        userId: jellyfin.userId,
         itemId: id.value,
     }).then((res) => {
-        store.commit.setItem({ id: id.value, item: res.data });
+        store.setItem(id.value, res.data);
     });
 }
 
-// fetch albums
+fetchCurrentLibrary();
+
+const albums: Ref<BaseItemDto[]> = ref([]);
+const isLoading = ref(true);
+
 function fetchAlbums() {
     isLoading.value = true;
     const params: ItemsApiGetItemsByUserIdRequest = {
-        userId: store.state.jellyfin.userId,
+        userId: jellyfin.userId,
         includeItemTypes: ["MusicAlbum"],
         recursive: true,
         parentId: queryType.value == "artist" ? undefined : id.value,
@@ -49,12 +54,12 @@ function fetchAlbums() {
         params.albumArtistIds?.push(id.value);
     }
 
-    store.state.jellyfin.itemsApi?.getItemsByUserId(params).then((res) => {
+    jellyfin.itemsApi?.getItemsByUserId(params).then((res) => {
         isLoading.value = false;
         if (res.data.Items) {
             res.data.Items.forEach(item => {
                 if (item.Id) {
-                    store.commit.setItem({ id: item.Id, item: item });
+                    store.setItem(item.Id, item);
                 }
             });
             albums.value = res.data.Items;
@@ -62,6 +67,8 @@ function fetchAlbums() {
         console.log(res.data);
     });
 }
+
+fetchAlbums();
 
 watch(
     () => route.params,
@@ -72,9 +79,6 @@ watch(
         console.log(queryType);
     }
 );
-
-fetchCurrentLibrary();
-fetchAlbums();
 </script>
 
 <template>

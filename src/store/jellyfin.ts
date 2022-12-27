@@ -11,7 +11,7 @@ import {
     UserLibraryApi,
     UserViewsApi,
 } from "@jellyfin/client-axios";
-import { useRootStore } from "./root";
+import { useStore } from ".";
 import JellyfinState from "./modules/jellyfin/jellyfin-state";
 
 export const useJellyfinStore = defineStore("jellyfin", {
@@ -152,7 +152,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
         },
 
         async fetchLibraries() {
-            const root = useRootStore();
+            const store = useStore();
             let result = await this.userViewsApi?.getUserViews({
                 userId: this.userId,
             });
@@ -167,7 +167,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
             libraryItems.forEach((item) => {
                 if (item.Id) {
                     // TODO: assign item id in root store
-                    root.setItem(item.Id, item);
+                    store.setItem(item.Id, item);
                 }
             })
         },

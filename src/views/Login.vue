@@ -1,32 +1,33 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { useStore } from "vuex";
-import store from "../store";
-import jellyfin from "../store/modules/jellyfin";
+import { useJellyfinStore } from "@/store/jellyfin";
 import router from "../router";
 
-const protocol = ref(store.state.jellyfin.protocol);
-const address = ref(store.state.jellyfin.address);
-const port = ref(store.state.jellyfin.port);
-const username = ref(store.state.jellyfin.username);
+const jellyfin = useJellyfinStore();
+
+const protocol = ref(jellyfin.protocol);
+const address = ref(jellyfin.address);
+const port = ref(jellyfin.port);
+const username = ref(jellyfin.username);
 const password = ref("");
 
-const serverURL = computed(() =>
-    `${store.state.jellyfin.protocol}://${store.state.jellyfin.address}`);
-
-const insecure = computed(() => protocol.value != "https");
-
 function login() {
-    store.dispatch.jellyfin.authenticate({
-        protocol: protocol.value,
-        address: address.value,
-        port: port.value,
-        username: username.value,
-        password: password.value
-    }).then(() => {
+    jellyfin.authenticate(
+        protocol.value,
+        address.value,
+        port.value,
+        username.value,
+        password.value
+    ).then(() => {
         router.push("/home");
     });
 }
+
+const serverURL = computed(() =>
+    `${jellyfin.protocol}://${jellyfin.address}`);
+
+const insecure = computed(() => protocol.value != "https");
+
 </script>
 
 <template>

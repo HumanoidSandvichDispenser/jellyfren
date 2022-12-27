@@ -1,24 +1,28 @@
 <script setup lang="ts">
 import { computed } from "@vue/reactivity";
 import { BaseItemDto } from "@jellyfin/client-axios";
+import { useStore } from "@/store";
+import { useJellyfinStore } from "@/store/jellyfin";
 import SongItem from "../components/SongItem.vue";
 import draggable from "vuedraggable";
-import store from "../store";
 import AudioController from "../components/AudioController.vue";
 
+const store = useStore();
+const jellyfin = useJellyfinStore();
+
 const songs = computed({
-    get: (): BaseItemDto[] => store.state.currentPlaylist,
-    set: (value: BaseItemDto[]): void => store.commit.setCurrentPlaylist(value)
+    get: (): BaseItemDto[] => store.currentPlaylist,
+    set: (value: BaseItemDto[]) => store.currentPlaylist = value
 });
 
-const currentSong = computed(() => store.state.currentSong);
+const currentSong = computed(() => store.currentSong);
 
 function playSong(song: BaseItemDto) {
-    store.dispatch.playSong(song);
+    store.playSong(song);
 }
 
 function removeByIndex(index: number) {
-    store.commit.removeFromPlaylist(index);
+    store.removeFromPlaylist(index);
 }
 </script>
 

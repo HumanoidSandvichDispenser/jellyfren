@@ -1,16 +1,34 @@
 <script setup lang="ts">
 import { computed, ref, Ref } from "vue";
-import store from "@/store";
 import LibraryItem from "../components/LibraryItem.vue";
 import { BaseItemDto, BaseItemDtoQueryResult } from "@jellyfin/client-axios";
+import { useStore } from "@/store";
+import { useJellyfinStore } from "@/store/jellyfin";
 import router from "@/router";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
 
-//let libraries: BaseItemDto[] = [];
-//let libraries: Ref<BaseItemDto[]> = ref([]);
-let isLoading = ref(true);
-const libraries = computed(() => store.state.libraries);
-const username = computed(() => store.state.jellyfin.username);
+const store = useStore();
+const jellyfin = useJellyfinStore();
+
+const libraries = computed(() => store.libraries);
+const username = computed(() => jellyfin.username);
+
+function logout() {
+    // `finally` so it runs whether or not we are authenticated
+    jellyfin.deauthenticate().then(() => {
+
+    }).catch(() => {
+
+    }).finally(() => {
+        router.replace("/login");
+    });
+}
+
+const isLoading = ref(true);
+
+jellyfin.fetchLibraries().then(() => {
+    isLoading.value = false;
+});
 
 function onLibraryItemClicked(library: BaseItemDto) {
     if (!library.Id) {
@@ -20,22 +38,6 @@ function onLibraryItemClicked(library: BaseItemDto) {
     console.log("Loading library " + library.Id);
     router.push("/library/" + library.Id);
 }
-
-function logout() {
-    // `finally` so it runs whether or not we are authenticated
-    store.dispatch.jellyfin.deauthenticate(undefined).then(() => {
-
-    }).catch(() => {
-
-    }).finally(() => {
-        router.replace("/login");
-    });
-}
-
-store.dispatch.jellyfin.fetchLibraries(undefined).then(() => {
-    isLoading.value = false;
-});
-
 </script>
 
 <template>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, PropType } from "vue";
 import { BaseItemDto } from "@jellyfin/client-axios";
-import store from "../store";
+import { useJellyfinStore } from "../store/jellyfin";
+
+const jellyfin = useJellyfinStore();
 
 const props = defineProps({
     song: {
@@ -23,7 +25,7 @@ const artists = computed(() => {
 
 const imageUrl = computed(() => {
     const id = props.song.AlbumId;
-    const baseUrl = store.state.jellyfin.configuration.basePath;
+    const baseUrl = jellyfin.configuration.basePath;
     return `${baseUrl}/Items/${id}/Images/Primary?fillWidth=128`;
 });
 </script>

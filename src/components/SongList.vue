@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import SongItem from "../components/SongItem.vue";
 import Song from "../song";
-import { useStore } from "vuex";
 import draggable from "vuedraggable";
 import { computed } from "vue";
-import store from "../store";
+import { useStore } from "../store";
+
+const store = useStore();
 
 const props = defineProps({
     listTitle: String,
@@ -20,9 +21,8 @@ const songs = computed({
     set: (value: Song[]): void => emit("update:songs", value)
 });
 
-//const playlist = computed(() => store.state.currentPlaylist);
 function playSongByIndex(index: number) {
-    store.commit.playSongByIndex(index);
+    store.playSongByIndex(index);
 }
 </script>
 

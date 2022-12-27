@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
-import store from "../store";
+import { useStore } from "../store";
 import router from "../router";
 
-const libraries = computed(() => store.state.libraries);
+const store = useStore();
+
+const libraries = computed(() => store.libraries);
 const playlists = [];
 const isOpen = ref(false);
 </script>
