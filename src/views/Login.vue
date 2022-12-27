@@ -12,6 +12,7 @@ const username = ref(jellyfin.username);
 const password = ref("");
 
 function login() {
+    console.log("lol");
     jellyfin.authenticate(
         protocol.value,
         address.value,

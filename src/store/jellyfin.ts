@@ -50,11 +50,11 @@ export const useJellyfinStore = defineStore("jellyfin", {
 
             if (data == null) {
                 console.log("This is the first time logging in.");
-                return rej("First time login.");
+                return Promise.reject("First time login.");
             }
 
             const configuration = JSON.parse(data);
-            this.configuration = configuration;
+            this.setConfiguration(configuration);
             this.accessToken = configuration.apiKey;
 
             await this.fetchUserId();
@@ -75,6 +75,11 @@ export const useJellyfinStore = defineStore("jellyfin", {
             username: string,
             password: string
         ) {
+            this.protocol = protocol;
+            this.address = address;
+            this.port = port;
+            this.username = username;
+
             let ax = axios.create({
                 headers: {
                     Authorization: this.token,
@@ -95,16 +100,11 @@ export const useJellyfinStore = defineStore("jellyfin", {
             if (res.AccessToken && res.User?.Id) {
                 this.accessToken = res.AccessToken;
                 this.userId = res.User.Id;
-                this.configuration = new Configuration({
+                await this.setConfiguration(new Configuration({
                     basePath: this.serverURL,
                     apiKey: this.token,
                     username: this.userId,
-                });
-
-                this.protocol = protocol;
-                this.address = address;
-                this.port = port;
-                this.username = username;
+                }));
 
                 // save authentication configuration
                 window.localStorage.setItem(
@@ -138,7 +138,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
 
         async deauthenticate() {
             this.accessToken = "";
-            this.configuration = new Configuration({ });
+            this.setConfiguration(new Configuration({ }));
             window.localStorage.removeItem("jellyfin/configuration");
             return this.sessionApi?.reportSessionEnded();
         },
@@ -169,7 +169,9 @@ export const useJellyfinStore = defineStore("jellyfin", {
                     // TODO: assign item id in root store
                     store.setItem(item.Id, item);
                 }
-            })
+            });
+
+            store.libraries = libraryItems;
         },
     }
 });
