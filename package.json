@@ -16,6 +16,7 @@
         "@jellyfin/client-axios": "^10.7.8",
         "@tauri-apps/api": "^1.2.0",
         "direct-vuex": "^1.0.0-rc3",
+        "pinia": "^2.0.28",
         "sortablejs": "^1.15.0",
         "sortablejs-vue3": "^1.2.3",
         "vue": "^3.2.45",
