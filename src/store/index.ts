@@ -9,8 +9,9 @@ export const useStore = defineStore("store", () => {
 
     const currentPlaylist = ref<BaseItemDto[]>([]);
     const currentSong = ref<BaseItemDto>({ });
-    //const audio = reactive(new Audio());
-    const audio = ref(new Audio());
+    const audio = reactive(new Audio());
+
+    audio.onended = next;
 
     async function playSong(song: BaseItemDto) {
         if (currentPlaylist.value.indexOf(song) == -1) {
@@ -25,7 +26,7 @@ export const useStore = defineStore("store", () => {
         // the URL. :DDDDD
         const url = `${basePath}/Audio/${id}/stream?static=true`;
 
-        audio.value.src = url;
+        audio.src = url;
         currentSong.value = song;
         play();
     }
@@ -41,29 +42,41 @@ export const useStore = defineStore("store", () => {
     const isPlaying = ref(false);
 
     function play() {
-        if (audio) {
-            audio.value.play();
+        audio.play();
+        if (audio.paused) {
             isPlaying.value = true;
         }
     }
 
     function pause() {
-        if (audio) {
-            audio.value.pause();
-            isPlaying.value = false;
-        }
+        audio.pause();
+        isPlaying.value = false;
     }
 
     function stop() {
         if (audio) {
-            audio.value.src = "";
+            audio.pause();
+            audio.src = "";
             isPlaying.value = false;
             currentSong.value = { };
         }
     }
 
-    function seek(time: number) {
-        audio.value.currentTime = time;
+    function next() {
+        let index = currentPlaylist.value.indexOf(currentSong.value);
+        if (index == -1) {
+            // somehow the current song is not in the current playlist
+            return;
+        }
+
+        // if there are no songs after this then stop
+        if (index + 1 >= currentPlaylist.value.length) {
+            stop();
+            return;
+        }
+
+        // otherwise play the next song
+        playSong(currentPlaylist.value[index + 1]);
     }
 
     const items = ref<{ [id: string]: BaseItemDto }>({ });
@@ -88,7 +101,7 @@ export const useStore = defineStore("store", () => {
         play,
         pause,
         stop,
-        seek,
+        next,
         items,
         libraries,
         setItem,

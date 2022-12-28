@@ -8,7 +8,8 @@ const store = useStore();
 
 const progress = computed({
     get: (): number => {
-        return progressVal.value = store.audio.currentTime;
+        progressVal.value = Math.floor(store.audio.currentTime);
+        return progressVal.value;
     },
     set: (value: number): void => {
         progressVal.value = store.audio.currentTime = value;
