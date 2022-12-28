@@ -3130,3 +3130,8 @@ name = "xml-rs"
 version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2d7d3948613f75c98fd9328cfdcc45acc4d360655289d0a7d4ec931392200a3"
+
+[[patch.unused]]
+name = "wry"
+version = "0.19.0"
+source = "git+https://github.com/tauri-apps/wry?branch=autoplay-0.19#1f0de51ed7485070985f0fafce2dc5eccabc2d11"

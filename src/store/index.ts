@@ -1,73 +1,96 @@
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import { defineStore } from "pinia";
 import { BaseItemDto } from "@jellyfin/client-axios";
 import { useJellyfinStore } from "./jellyfin";
 import { RootState } from "./types";
 
-export const useStore = defineStore("store", {
-    state: (): RootState => ({
-        currentPlaylist: [],
-        items: { },
-        libraries: [],
-        currentSong: { },
-        isPlaying: false,
-        audio: new Audio(),
-    }),
+export const useStore = defineStore("store", () => {
+    const jellyfin = useJellyfinStore();
 
-    actions: {
-        playSong(song: BaseItemDto) {
-            const jellyfin = useJellyfinStore();
-            if (this.currentPlaylist.indexOf(song) == -1) {
-                throw "Song should be in the current playlist before playing.";
-            }
+    const currentPlaylist = ref<BaseItemDto[]>([]);
+    const currentSong = ref<BaseItemDto>({ });
+    //const audio = reactive(new Audio());
+    const audio = ref(new Audio());
 
-            const id = song.Id;
-            const basePath = jellyfin.configuration.basePath;
-            const url = `${basePath}/Audio/${id}/stream`;
+    async function playSong(song: BaseItemDto) {
+        if (currentPlaylist.value.indexOf(song) == -1) {
+            throw "Song should be in the current playlist before playing.";
+        }
 
-            if (this.audio) {
-                this.audio.src = url;
-                this.currentSong = song;
-                this.play();
-            }
-        },
+        const id = song.Id;
+        const basePath = jellyfin.configuration.basePath;
 
-        playSongByIndex(index: number) {
-            this.playSong(this.currentPlaylist[index]);
-        },
+        // I spent 5 hours researching ways to get around webkit not being able
+        // to seek streams, when all I had to do was append `?static=true` to
+        // the URL. :DDDDD
+        const url = `${basePath}/Audio/${id}/stream?static=true`;
 
-        removeFromPlaylist(index: number) {
-            this.currentPlaylist.splice(index, 1);
-        },
-
-        play() {
-            if (this.audio) {
-                this.audio.play();
-                this.isPlaying = true;
-            }
-        },
-
-        pause() {
-            if (this.audio) {
-                this.audio.pause();
-                this.isPlaying = false;
-            }
-        },
-
-        stop() {
-            if (this.audio) {
-                this.audio.src = "";
-                this.isPlaying = false;
-                this.currentSong = { };
-            }
-        },
-
-        setItem(id: string, item: BaseItemDto) {
-            if (item == undefined) {
-                delete this.items[id];
-            } else {
-                this.items[id] = item;
-            }
-        },
+        audio.value.src = url;
+        currentSong.value = song;
+        play();
     }
+
+    function playSongByIndex(index: number) {
+        playSong(currentPlaylist.value[index]);
+    }
+
+    function removeFromPlaylist(index: number) {
+        currentPlaylist.value.splice(index, 1);
+    }
+
+    const isPlaying = ref(false);
+
+    function play() {
+        if (audio) {
+            audio.value.play();
+            isPlaying.value = true;
+        }
+    }
+
+    function pause() {
+        if (audio) {
+            audio.value.pause();
+            isPlaying.value = false;
+        }
+    }
+
+    function stop() {
+        if (audio) {
+            audio.value.src = "";
+            isPlaying.value = false;
+            currentSong.value = { };
+        }
+    }
+
+    function seek(time: number) {
+        audio.value.currentTime = time;
+    }
+
+    const items = ref<{ [id: string]: BaseItemDto }>({ });
+    const libraries = ref<BaseItemDto[]>([]);
+
+    function setItem(id: string, item: BaseItemDto) {
+        if (item == undefined) {
+            delete items.value[id];
+        } else {
+            items.value[id] = item;
+        }
+    }
+
+    return {
+        currentPlaylist,
+        currentSong,
+        isPlaying,
+        audio,
+        playSong,
+        playSongByIndex,
+        removeFromPlaylist,
+        play,
+        pause,
+        stop,
+        seek,
+        items,
+        libraries,
+        setItem,
+    };
 });

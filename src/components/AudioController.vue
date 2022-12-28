@@ -8,18 +8,10 @@ const store = useStore();
 
 const progress = computed({
     get: (): number => {
-        if (store.audio) {
-            progressVal.value = store.audio.currentTime;
-        }
-        return progressVal.value;
+        return progressVal.value = store.audio.currentTime;
     },
     set: (value: number): void => {
-        if (store.audio) {
-            // TODO: this works on firefox but not on webview
-            // replace this with howler.js
-            store.audio.currentTime = value;
-        }
-        progressVal.value = value;
+        progressVal.value = store.audio.currentTime = value;
     }
 });
 
@@ -91,6 +83,7 @@ function mute() {
 setInterval(() => {
     progressVal.value++;
     progressVal.value--;
+    //store.audio.currentTime = store.audio.currentTime;
 }, 100);
 </script>
 

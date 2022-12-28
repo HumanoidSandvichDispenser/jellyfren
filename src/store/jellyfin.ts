@@ -7,6 +7,7 @@ import {
     ItemsApi,
     LibraryApi,
     SessionApi,
+    UniversalAudioApi,
     UserApi,
     UserLibraryApi,
     UserViewsApi,
@@ -134,6 +135,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
             this.userLibraryApi = new UserLibraryApi(config, url, ax);
             this.itemsApi = new ItemsApi(config, url, ax);
             this.audioApi = new AudioApi(config, url, ax);
+            this.universalAudioApi = new UniversalAudioApi(config, url, ax);
         },
 
         async deauthenticate() {

@@ -5,6 +5,7 @@ import {
     ItemsApi,
     LibraryApi,
     SessionApi,
+    UniversalAudioApi,
     UserApi,
     UserLibraryApi,
     UserViewsApi,
@@ -28,4 +29,5 @@ export default interface JellyfinState {
     userLibraryApi?: UserLibraryApi;
     itemsApi?: ItemsApi;
     audioApi?: AudioApi;
+    universalAudioApi?: UniversalAudioApi;
 };
