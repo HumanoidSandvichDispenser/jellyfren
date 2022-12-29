@@ -31,17 +31,22 @@ const imageUrl = computed(() => {
 </script>
 
 <template>
-    <tr class="song-item">
+    <tr :class="{ 'song-item': true, 'current': isPlaying }">
         <td class="song-index" v-if="props.song.IndexNumber && !isInPlaylist">
             {{ props.song.IndexNumber }}
         </td>
         <td class="song-album-art" v-if="isInPlaylist">
+            <!--div class="album-art-bar-container" v-if="isPlaying">
+                <div class="album-art-bar bar-1"></div>
+                <div class="album-art-bar bar-2"></div>
+                <div class="album-art-bar bar-3"></div>
+                <div class="album-art-bar bar-4"></div>
+            </div-->
             <img :src="imageUrl" />
         </td>
         <td class="song-info">
             <div class="title">
                 {{ props.song.Name }}
-                <span v-if="isPlaying">(currently playing)</span>
             </div>
             <div class="artist">{{ artists }}</div>
         </td>
@@ -80,6 +85,10 @@ const imageUrl = computed(() => {
     height: 64px;
 }
 
+.song-item.current {
+    color: var(--accent);
+}
+
 .song-item > td {
     vertical-align: middle;
 }
@@ -113,9 +122,61 @@ const imageUrl = computed(() => {
 .song-album-art {
     width: 64px;
     height: 64px;
+    max-width: 64px;
+    max-height: 64px;
 }
 
-.song-album-art > img {
+.song-album-art .album-art-bar-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    column-gap: 8px;
+}
+
+.album-art-bar-container .album-art-bar {
+    background-color: var(--fg0);
+    width: 16px;
+    display: block;
+    /*animation: album-art-bar 0.8s infinite;*/
+}
+
+.album-art-bar.bar-1 {
+    animation-delay: 200ms;
+    animation-duration: 1s;
+}
+
+.album-art-bar.bar-2 {
+    animation-delay: 100ms;
+    animation-duration: 0.7s;
+}
+
+.album-art-bar.bar-3 {
+    animation-delay: 300ms;
+    animation-duration: 0.4s;
+}
+
+@keyframes album-art-bar {
+    0% {
+        transform: scaleY(0.9);
+    }
+    25% {
+        transform: scaleY(0.7);
+    }
+    35% {
+        transform: scaleY(0.6);
+    }
+    40% {
+        transform: scaleY(0.7);
+    }
+    50% {
+        transform: scaleY(0.2);
+    }
+    100% {
+        transform: scaleY(1.0);
+    }
+}
+
+.song-album-art img {
     width: 64px;
     height: 64px;
     vertical-align: middle;
@@ -123,6 +184,10 @@ const imageUrl = computed(() => {
 
 .song-info > .artist {
     color: var(--fg2);
+}
+
+.current .song-info > .artist {
+    color: unset;
 }
 
 .song-actions button {

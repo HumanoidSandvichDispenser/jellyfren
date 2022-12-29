@@ -43,9 +43,7 @@ export const useStore = defineStore("store", () => {
 
     function play() {
         audio.play();
-        if (audio.paused) {
-            isPlaying.value = true;
-        }
+        isPlaying.value = true;
     }
 
     function pause() {
@@ -63,7 +61,8 @@ export const useStore = defineStore("store", () => {
     }
 
     function next() {
-        let index = currentPlaylist.value.indexOf(currentSong.value);
+        let index = currentPlaylist.value.findIndex((item) =>
+            item.Id == currentSong.value.Id);
         if (index == -1) {
             // somehow the current song is not in the current playlist
             return;
