@@ -8,7 +8,6 @@ import draggable from "vuedraggable";
 import AudioController from "../components/AudioController.vue";
 
 const store = useStore();
-const jellyfin = useJellyfinStore();
 
 const songs = computed({
     get: (): BaseItemDto[] => store.currentPlaylist,
@@ -29,7 +28,6 @@ function removeByIndex(index: number) {
 <template>
     <div class="now-playing">
         <h1>Now Playing</h1>
-        <audio-controller />
         <draggable
             v-model="songs"
             item-key="id"

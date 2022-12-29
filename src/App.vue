@@ -31,7 +31,7 @@ jellyfin.init().then(() => {
             <router-view />
         </main>
     </div>
-    <div class="footer" v-if="route.path != '/nowplaying'">
+    <div class="footer">
         <audio-controller />
     </div>
 </template>
