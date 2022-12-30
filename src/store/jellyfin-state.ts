@@ -10,6 +10,7 @@ import {
     UserLibraryApi,
     UserViewsApi,
 } from "@jellyfin/client-axios";
+import { Store } from "tauri-plugin-store-api";
 
 
 export default interface JellyfinState {
@@ -21,6 +22,8 @@ export default interface JellyfinState {
     accessToken: string;
     userId: string;
     configuration: Configuration;
+    tauriStore: Store;
+    isInitializing: boolean;
     axios?: AxiosInstance;
     libraryApi?: LibraryApi;
     userApi?: UserApi;

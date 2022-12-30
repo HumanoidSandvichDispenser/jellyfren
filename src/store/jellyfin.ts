@@ -12,6 +12,7 @@ import {
     UserLibraryApi,
     UserViewsApi,
 } from "@jellyfin/client-axios";
+import { Store } from "tauri-plugin-store-api";
 import { useStore } from ".";
 import JellyfinState from "./jellyfin-state";
 
@@ -25,6 +26,8 @@ export const useJellyfinStore = defineStore("jellyfin", {
         accessToken: "",
         userId: "",
         configuration: new Configuration(),
+        isInitializing: false,
+        tauriStore: new Store(".auth.dat"),
     }),
 
     getters: {
@@ -40,23 +43,28 @@ export const useJellyfinStore = defineStore("jellyfin", {
                 `Device="jellyfren"`,
                 `DeviceId="jellyfren"`,
                 `Version="0.0.0"`,
-                `Token="${this.accessToken}`
+                `Token="${this.configuration.apiKey}`
             ].join(", ");
         },
     },
 
     actions: {
         async init(): Promise<void> {
-            const data = window.localStorage.getItem("jellyfin/configuration");
+            const res = await this.tauriStore.get("configuration");
 
-            if (data == null) {
+            if (!res) {
                 console.log("This is the first time logging in.");
                 return Promise.reject("First time login.");
             }
 
-            const configuration = JSON.parse(data);
+            const configuration = res as Configuration;
+
+            if (typeof(configuration.apiKey) != "string") {
+                return Promise.reject("Invalid auth configuration");
+            }
+
             this.setConfiguration(configuration);
-            this.accessToken = configuration.apiKey;
+            //this.accessToken = configuration.apiKey;
 
             await this.fetchUserId();
             console.log("Found user id");
@@ -64,7 +72,8 @@ export const useJellyfinStore = defineStore("jellyfin", {
         },
 
         async ensureInit() {
-            if (this.configuration.apiKey == undefined) {
+            if (!this.isInitializing || !this.configuration.apiKey) {
+                this.isInitializing = true;
                 await this.init();
             }
         },
@@ -99,8 +108,9 @@ export const useJellyfinStore = defineStore("jellyfin", {
             })).data;
 
             if (res.AccessToken && res.User?.Id) {
-                this.accessToken = res.AccessToken;
+                //this.accessToken = res.AccessToken;
                 this.userId = res.User.Id;
+
                 await this.setConfiguration(new Configuration({
                     basePath: this.serverURL,
                     apiKey: this.token,
@@ -108,9 +118,9 @@ export const useJellyfinStore = defineStore("jellyfin", {
                 }));
 
                 // save authentication configuration
-                window.localStorage.setItem(
-                    "jellyfin/configuration",
-                    JSON.stringify(this.configuration)
+                await this.tauriStore.set(
+                    "configuration",
+                    this.configuration
                 );
             }
         },
@@ -139,9 +149,9 @@ export const useJellyfinStore = defineStore("jellyfin", {
         },
 
         async deauthenticate() {
-            this.accessToken = "";
+            //this.accessToken = "";
             this.setConfiguration(new Configuration({ }));
-            window.localStorage.removeItem("jellyfin/configuration");
+            await this.tauriStore.delete("configuration");
             return this.sessionApi?.reportSessionEnded();
         },
 

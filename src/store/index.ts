@@ -80,8 +80,13 @@ export const useStore = defineStore("store", () => {
 
     const items = ref<{ [id: string]: BaseItemDto }>({ });
     const libraries = ref<BaseItemDto[]>([]);
+    const playlists = ref<BaseItemDto[]>([]);
 
-    function setItem(id: string, item: BaseItemDto) {
+    function setItem(id?: string, item?: BaseItemDto) {
+        if (id == undefined) {
+            return;
+        }
+
         if (item == undefined) {
             delete items.value[id];
         } else {
@@ -103,6 +108,7 @@ export const useStore = defineStore("store", () => {
         next,
         items,
         libraries,
+        playlists,
         setItem,
     };
 });

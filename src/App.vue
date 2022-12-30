@@ -14,13 +14,7 @@ const store = useStore();
 const jellyfin = useJellyfinStore();
 const isPlaying = computed(() => store.isPlaying);
 
-jellyfin.init().then(() => {
-    if (router.currentRoute.value.path == "/") {
-        router.push("/home");
-    }
-}).catch(() => {
-    router.replace("/login");
-});
+jellyfin.ensureInit();
 </script>
 
 <template>

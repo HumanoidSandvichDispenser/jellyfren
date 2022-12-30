@@ -18,6 +18,11 @@ serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.2", features = ["shell-open"] }
 
+[dependencies.tauri-plugin-store]
+git = "https://github.com/tauri-apps/tauri-plugin-store"
+#tag = "v0.1.0"
+#branch = "main"
+
 [patch.crates-io]
 wry = { git = "https://github.com/tauri-apps/wry", branch = "autoplay-0.19" }
 

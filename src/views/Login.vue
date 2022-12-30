@@ -24,9 +24,6 @@ function login() {
     });
 }
 
-const serverURL = computed(() =>
-    `${jellyfin.protocol}://${jellyfin.address}`);
-
 const insecure = computed(() => protocol.value != "https");
 
 </script>

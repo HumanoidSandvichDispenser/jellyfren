@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { useJellyfinStore } from "@/store/jellyfin";
 import Login from "../views/Login.vue";
 import Home from "../views/Home.vue";
-import Library from "../views/Library.vue";
+import Library from "../views/LibraryNew.vue";
 import SongList from "../views/SongList.vue";
 import NowPlaying from "../views/NowPlaying.vue";
 
@@ -42,8 +42,11 @@ const router = createRouter({
 router.beforeEach((to) => {
     const jellyfin = useJellyfinStore();
 
-    if (jellyfin.accessToken == "" && to.path != "/login") {
-        return "/login";
+    // force to login page if we're not logged in
+    if (!jellyfin.configuration.apiKey && to.path != "/login") {
+        if (!jellyfin.isInitializing) {
+            return "/login";
+        }
     }
 });
 

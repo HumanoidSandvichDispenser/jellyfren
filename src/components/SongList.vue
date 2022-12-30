@@ -1,62 +1,112 @@
 <script setup lang="ts">
-import SongItem from "../components/SongItem.vue";
-import Song from "../song";
-import draggable from "vuedraggable";
-import { computed } from "vue";
+import { defineProps, PropType, ref } from "vue";
 import { useStore } from "../store";
+import { BaseItemDto } from "@jellyfin/client-axios";
+import SongItem from "../components/SongItem.vue";
 
 const store = useStore();
 
 const props = defineProps({
-    listTitle: String,
-    isSortable: Boolean,
-    isPlaylist: Boolean,
-    songs: Array<Song>
+    songs: {
+        type: Object as PropType<BaseItemDto[]>,
+        required: true
+    },
+    sortable: Boolean,
 });
 
-const emit = defineEmits([ "update:songs" ]);
+const emit = defineEmits(["change"]);
 
 const songs = computed({
-    get: (): Song[] => props.songs ?? [],
-    set: (value: Song[]): void => emit("update:songs", value)
-});
+    get: () => {
+        return props.songs;
+    },
+    set: (value: BaseItemDto[]) => {
+        emit("change", value);
+    }
+})
 
-function playSongByIndex(index: number) {
-    store.playSongByIndex(index);
+function playSong(song: BaseItemDto) {
+    store.currentPlaylist.push(song);
+    store.playSong(song);
+}
+
+function add(song: BaseItemDto) {
+    store.currentPlaylist.push(song);
+}
+
+function remove(song: BaseItemDto) {
+    const index = store.currentPlaylist.indexOf(song);
+    if (index > -1) {
+        store.removeFromPlaylist(index);
+    }
 }
 </script>
 
 <template>
-    <div class="song-list">
-        <h1>{{ listTitle }} ({{ songs.length }})</h1>
-        <div v-if="isSortable" class="songs sortable">
-            <draggable
-                v-model="songs"
-                item-key="id"
-            >
-                <template #item="{ element, index }">
-                    <!--song-item
-                        :title="element.title"
-                        :artist="element.artist"
-                        :index="index"
-                        :is-in-playlist="isPlaylist"
-                        :is-playing="element.isPlaying"
-                        @play="playSongByIndex(index)"
-                    /-->
-                </template>
-            </draggable>
-        </div>
-        <div v-else class="songs">
-            <!--song-item
-                v-for="(song, i) in songs"
-                :title="song.title"
-                :artist="song.artist"
-                :index="i"
-                :is-in-playlist="isPlaylist"
-                :is-playing="song.isPlaying"
-                @play="playSongByIndex(i)"
-            /-->
-        </div>
-        <!--greet /-->
-    </div>
+    <table class="songs">
+        <song-item
+            v-for="(song, i) in songs"
+            :song="song"
+            :index="i"
+            @play="playSong(song)"
+            @remove="remove(song)"
+            @add="add(song)"
+        />
+    </table>
 </template>
+
+<style>
+.songs > h1 {
+    padding: 16px;
+}
+
+.songs {
+    border-spacing: 0;
+    width: 100%;
+}
+
+.list-info {
+    position: relative;
+    display: flex;
+    padding: 16px;
+}
+
+.list-info::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+}
+
+.list-info > * {
+    position: relative;
+    filter: initial;
+}
+
+.list-info .cover img {
+    max-width: 192px;
+    max-height: 192px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.list-info .details {
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-end;
+}
+
+.list-info .details .name {
+    margin-bottom: 8px;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1em;
+}
+
+.list-info .details .other {
+    color: var(--fg2);
+}
+</style>
