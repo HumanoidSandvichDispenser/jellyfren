@@ -13,7 +13,7 @@ import {
     UserViewsApi,
 } from "@jellyfin/client-axios";
 import { useStore } from ".";
-import JellyfinState from "./modules/jellyfin/jellyfin-state";
+import JellyfinState from "./jellyfin-state";
 
 export const useJellyfinStore = defineStore("jellyfin", {
     state: (): JellyfinState => ({
@@ -174,6 +174,20 @@ export const useJellyfinStore = defineStore("jellyfin", {
             });
 
             store.libraries = libraryItems;
+        },
+
+        async fetchPlaylists() {
+            const store = useStore();
+
+            let res = await this.itemsApi?.getItems({
+                userId: this.userId,
+                includeItemTypes: ["Playlist"],
+                recursive: true,
+            });
+
+            if (res?.data.Items) {
+                store.playlists = res.data.Items;
+            }
         },
     }
 });

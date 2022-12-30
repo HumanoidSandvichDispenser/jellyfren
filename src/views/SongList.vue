@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineProps, ref, Ref } from "vue";
+import { computed, defineProps, ref, watch } from "vue";
 import { useStore } from "../store";
 import { useJellyfinStore } from "../store/jellyfin";
 import { useRoute } from "vue-router";
@@ -9,10 +9,6 @@ import LoadingSpinner from "../components/LoadingSpinner.vue";
 
 const store = useStore();
 const jellyfin = useJellyfinStore();
-
-const props = defineProps({
-    baseUrl: String
-});
 
 const route = useRoute();
 const id = computed(() => route.params["id"] as string);
@@ -35,8 +31,8 @@ const imageUrl = computed(() => {
            "/Images/Primary?width=192";
 });
 
-const item: Ref<BaseItemDto> = ref({});
-const songs: Ref<BaseItemDto[]> = ref([]);
+const item = ref<BaseItemDto>({});
+const songs = ref<BaseItemDto[]>([]);
 const isLoading = ref(true);
 
 //const playlist = computed(() => store.state.currentPlaylist);
@@ -80,6 +76,15 @@ function fetchItems() {
         }
     });
 }
+
+watch(
+    () => route.params,
+    () => {
+        fetchCurrentItemList();
+        songs.value.length = 0;
+        fetchItems();
+    }
+);
 
 function playSong(song: BaseItemDto) {
     store.currentPlaylist = songs.value;

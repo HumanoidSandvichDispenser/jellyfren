@@ -28,6 +28,7 @@ const isLoading = ref(true);
 
 jellyfin.fetchLibraries().then(() => {
     isLoading.value = false;
+    jellyfin.fetchPlaylists();
 });
 
 function onLibraryItemClicked(library: BaseItemDto) {

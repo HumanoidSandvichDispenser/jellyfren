@@ -7,7 +7,7 @@ import router from "../router";
 const store = useStore();
 
 const libraries = computed(() => store.libraries);
-const playlists = [];
+const playlists = computed(() => store.playlists);
 const isOpen = ref(false);
 </script>
 
@@ -98,6 +98,7 @@ aside.sidebar button {
     display: block;
     max-height: 48px;
     width: 100%;
+    max-width: 256px;
     text-align: left;
     border: unset;
     font-weight: 500;
@@ -105,6 +106,9 @@ aside.sidebar button {
     border-radius: 0;
     box-shadow: none;
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 aside.sidebar button:hover {
