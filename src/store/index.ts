@@ -60,7 +60,7 @@ export const useStore = defineStore("store", () => {
     }
 
     function next() {
-        let index = currentPlaylist.value.findIndex((item) =>
+        const index = currentPlaylist.value.findIndex((item) =>
             item.Id == currentSong.value.Id);
         if (index == -1) {
             // somehow the current song is not in the current playlist

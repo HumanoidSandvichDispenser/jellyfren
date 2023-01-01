@@ -40,10 +40,10 @@ export const useJellyfinStore = defineStore("jellyfin", {
 
         token(): string {
             return [
-                `MediaBrowser Client="jellyfren"`,
-                `Device="jellyfren"`,
-                `DeviceId="jellyfren"`,
-                `Version="0.0.0"`,
+                "MediaBrowser Client=\"jellyfren\"",
+                "Device=\"jellyfren\"",
+                "DeviceId=\"jellyfren\"",
+                "Version=\"0.0.0\"",
                 `Token="${this.configuration.apiKey}`
             ].join(", ");
         },
@@ -91,7 +91,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
             this.port = port;
             this.username = username;
 
-            let ax = axios.create({
+            const ax = axios.create({
                 headers: {
                     Authorization: this.token,
                 },
@@ -158,7 +158,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
         },
 
         async fetchUserId() {
-            let res = await this.userApi?.getCurrentUser();
+            const res = await this.userApi?.getCurrentUser();
             if (res && res.data.Id && res.data.Name) {
                 this.userId = res.data.Id;
                 this.username = res.data.Name;
@@ -167,12 +167,12 @@ export const useJellyfinStore = defineStore("jellyfin", {
 
         async fetchLibraries() {
             const store = useStore();
-            let result = await this.userViewsApi?.getUserViews({
+            const result = await this.userViewsApi?.getUserViews({
                 userId: this.userId,
             });
 
-            let items = result?.data.Items;
-            let libraryItems = items?.filter(item => item.CollectionType == "music");
+            const items = result?.data.Items;
+            const libraryItems = items?.filter(item => item.CollectionType == "music");
 
             if (!libraryItems) {
                 return;
@@ -191,7 +191,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
         async fetchPlaylists() {
             const store = useStore();
 
-            let res = await this.itemsApi?.getItems({
+            const res = await this.itemsApi?.getItems({
                 userId: this.userId,
                 includeItemTypes: ["Playlist"],
                 recursive: true,

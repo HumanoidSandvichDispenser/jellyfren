@@ -4,4 +4,4 @@ export default interface SongInfo {
     album: string;
     albumArtist: string;
     id: string;
-}
+};

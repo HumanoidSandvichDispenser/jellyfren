@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import {
-ArtistsApi,
+    ArtistsApi,
     AudioApi,
     Configuration,
     ItemsApi,
@@ -35,4 +35,4 @@ export default interface JellyfinState {
     audioApi?: AudioApi;
     universalAudioApi?: UniversalAudioApi;
     artistsApi?: ArtistsApi;
-};
+};;;;;;;;;;;;;;;;;;;;;
