@@ -44,9 +44,7 @@ router.beforeEach((to) => {
 
     // force to login page if we're not logged in
     if (!jellyfin.configuration.apiKey && to.path != "/login") {
-        if (!jellyfin.isInitializing) {
-            return "/login";
-        }
+        return "/login";
     }
 
     // default to albums if no library tab is specified

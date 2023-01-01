@@ -44,7 +44,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
                 "Device=\"jellyfren\"",
                 "DeviceId=\"jellyfren\"",
                 "Version=\"0.0.0\"",
-                `Token="${this.configuration.apiKey}`
+                `Token="${this.accessToken}"`
             ].join(", ");
         },
     },
@@ -65,7 +65,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
             }
 
             this.setConfiguration(configuration);
-            //this.accessToken = configuration.apiKey;
+            this.accessToken = configuration.apiKey;
 
             await this.fetchUserId();
             console.log("Found user id");
@@ -109,7 +109,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
             })).data;
 
             if (res.AccessToken && res.User?.Id) {
-                //this.accessToken = res.AccessToken;
+                this.accessToken = res.AccessToken;
                 this.userId = res.User.Id;
 
                 await this.setConfiguration(new Configuration({
@@ -119,11 +119,14 @@ export const useJellyfinStore = defineStore("jellyfin", {
                 }));
 
                 // save authentication configuration
-                await this.tauriStore.set(
+                this.tauriStore.set(
                     "configuration",
                     this.configuration
                 );
             }
+
+            console.log("Logged in");
+            console.log(res);
         },
 
         async setConfiguration(config: Configuration) {
@@ -151,7 +154,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
         },
 
         async deauthenticate() {
-            //this.accessToken = "";
+            this.accessToken = "";
             this.setConfiguration(new Configuration({ }));
             await this.tauriStore.delete("configuration");
             return this.sessionApi?.reportSessionEnded();
