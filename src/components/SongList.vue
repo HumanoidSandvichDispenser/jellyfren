@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, PropType, ref } from "vue";
+import { computed, defineProps, PropType, ref } from "vue";
 import { useStore } from "../store";
 import { BaseItemDto } from "@jellyfin/client-axios";
 import SongItem from "../components/SongItem.vue";

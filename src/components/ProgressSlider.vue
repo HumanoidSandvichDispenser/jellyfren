@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { computed, defineEmits, defineProps, onMounted, ref, Ref } from "vue";
+import { computed, defineEmits, defineProps, onMounted, ref } from "vue";
 
 const props = defineProps({
-    value: Number,
+    value: {
+        type: Number,
+        required: true,
+    },
     max: {
         type: Number,
         default: 1,
@@ -17,7 +20,7 @@ const props = defineProps({
     },
 });
 
-const slider: Ref<HTMLElement> = ref(null);
+const slider = ref<HTMLDivElement>();
 const emit = defineEmits(["update:value"]);
 
 const value = computed({
@@ -35,6 +38,10 @@ const value = computed({
 });
 
 function updateProgress(val: number) {
+    if (!slider.value) {
+        return;
+    }
+
     const min = props.min;
     const max = props.max;
     const p = ((val - min) * 100) / (max - min);

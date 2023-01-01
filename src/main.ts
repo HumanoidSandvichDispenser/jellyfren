@@ -15,8 +15,10 @@ const app = createApp(App);
 app.use(pinia);
 
 // try to login first before we continue loading our app
-await useJellyfinStore().ensureInit();
+useJellyfinStore().ensureInit()
+    .then(() => {
+        app.use(router)
+            .use(BootstrapIcon)
+            .mount("#app");
+    });
  
-app.use(router)
-    .use(BootstrapIcon)
-    .mount("#app");

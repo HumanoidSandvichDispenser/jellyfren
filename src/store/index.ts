@@ -2,7 +2,6 @@ import { reactive, ref } from "vue";
 import { defineStore } from "pinia";
 import { BaseItemDto } from "@jellyfin/client-axios";
 import { useJellyfinStore } from "./jellyfin";
-import { RootState } from "./types";
 
 export const useStore = defineStore("store", () => {
     const jellyfin = useJellyfinStore();
