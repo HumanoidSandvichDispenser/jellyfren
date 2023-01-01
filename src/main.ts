@@ -5,11 +5,18 @@ import App from "./App.vue";
 import router from "./router";
 import BootstrapIcon from "@dvuckovic/vue3-bootstrap-icons";
 import { createPinia } from "pinia";
+import { useJellyfinStore } from "./store/jellyfin";
 
 const pinia = createPinia();
 
-createApp(App)
-    .use(router)
+
+const app = createApp(App);
+
+app.use(pinia);
+
+// try to login first before we continue loading our app
+await useJellyfinStore().ensureInit();
+ 
+app.use(router)
     .use(BootstrapIcon)
-    .use(pinia)
     .mount("#app");

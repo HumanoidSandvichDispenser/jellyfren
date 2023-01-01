@@ -18,7 +18,7 @@ const routes: RouteRecordRaw[] = [
         component: Login
     },
     {
-        path: "/library/:id",
+        path: "/library/:id/:tab?",
         name: "Library",
         component: Library
     },
@@ -46,6 +46,13 @@ router.beforeEach((to) => {
     if (!jellyfin.configuration.apiKey && to.path != "/login") {
         if (!jellyfin.isInitializing) {
             return "/login";
+        }
+    }
+
+    // default to albums if no library tab is specified
+    if (to.path.startsWith("/library")) {
+        if (!to.params["tab"]) {
+            to.params["tab"] = "albums";
         }
     }
 });

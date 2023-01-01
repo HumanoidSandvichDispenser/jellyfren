@@ -35,7 +35,6 @@ const item = ref<BaseItemDto>({});
 const songs = ref<BaseItemDto[]>([]);
 const isLoading = ref(true);
 
-//const playlist = computed(() => store.state.currentPlaylist);
 const playlist = computed({
     get: (): BaseItemDto[] => store.currentPlaylist,
     set: (value: BaseItemDto[]) => store.currentPlaylist = value

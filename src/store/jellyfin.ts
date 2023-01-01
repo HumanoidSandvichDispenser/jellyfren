@@ -2,6 +2,7 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios, { AxiosInstance } from "axios";
 import {
+    ArtistsApi,
     AudioApi,
     Configuration,
     ItemsApi,
@@ -146,6 +147,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
             this.itemsApi = new ItemsApi(config, url, ax);
             this.audioApi = new AudioApi(config, url, ax);
             this.universalAudioApi = new UniversalAudioApi(config, url, ax);
+            this.artistsApi = new ArtistsApi(config, url, ax);
         },
 
         async deauthenticate() {

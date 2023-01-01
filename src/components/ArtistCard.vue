@@ -14,18 +14,12 @@ const props = defineProps({
     },
 });
 
-const albumName = computed(() => props.item.Name ?? "");
-const artistName = computed(() => props.item.AlbumArtist ?? "");
-const albumUrl = computed(() => "/list/" + props.item.Id);
-const artistUrl = computed(() => {
-    if (props.item.AlbumArtists) {
-        const albumArtists = props.item.AlbumArtists;
-        if (albumArtists.length > 0) {
-            const id = props.item.AlbumArtists[0].Id;
-            if (id) {
-                return "/library/" + id + "?type=artist";
-            }
-        }
+const name = computed(() => props.item.Name ?? "");
+
+const url = computed(() => {
+    const id = props.item.Id;
+    if (id) {
+        return "/artist/" + id;
     }
     return "/";
 });
@@ -39,10 +33,8 @@ const imageUrl = computed(() => {
 
 <template>
     <card
-        :primary-text="albumName"
-        :primary-url="albumUrl"
-        :secondary-text="artistName"
-        :secondary-url="artistUrl"
+        :primary-text="name"
+        :primary-url="url"
         :image-url="imageUrl"
         image-fallback-url="https://cdn.7tv.app/emote/62967d6a0d36ad890711ca5a/4x.webp"
     />
