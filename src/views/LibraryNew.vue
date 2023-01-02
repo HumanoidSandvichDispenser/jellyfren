@@ -7,83 +7,83 @@ import {
 } from "@jellyfin/client-axios";
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
+import { AxiosResponse } from "axios";
+import { useCacheStore } from "@/store/cache";
 import AlbumList from "@/components/AlbumList.vue";
 import ArtistCard from "@/components/ArtistCard.vue";
-import { AxiosResponse } from "axios";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import { useSettingsStore } from "@/store/settings";
 
 const route = useRoute();
 const store = useStore();
 const jellyfin = useJellyfinStore();
+const cache = useCacheStore();
+const settings = useSettingsStore();
 
 const id = computed(() => route.params["id"] as string);
 const tab = computed(() => route.params["tab"] as string);
 const page = ref(0);
 
+const totalCount = computed(() => {
+    switch (tab.value) {
+        case "albums":
+            return cache.albumCount;
+        case "artists":
+            return cache.artistCount;
+    }
+    return 0;
+});
+
 function gotoPage(increment: number) {
+    let pageCount = Math.ceil(totalCount.value / settings.itemsPerPage);
     page.value += increment;
     page.value = Math.max(page.value, 0);
+    page.value = Math.min(page.value, pageCount);
     loadCurrentTab();
 }
+
+const range = computed(() => {
+    let min = page.value * settings.itemsPerPage + 1;
+    let max = (page.value + 1) * settings.itemsPerPage;
+    min = Math.min(min, totalCount.value);
+    max = Math.min(max, totalCount.value);
+    return `${min} - ${max}`;
+});
 
 watch(tab, (newTab, oldTab) => {
     loadCurrentTab();
     page.value = 0;
 });
 
-async function fetchChildren(parentId?: string, types?: string[]) {
-    const params: ItemsApiGetItemsByUserIdRequest = {
-        userId: jellyfin.userId,
-        includeItemTypes: types,
-        recursive: true,
-        parentId,
-        sortBy: ["SortName"],
-        albumArtistIds: [],
-        limit: 100,
-        startIndex: page.value * 100,
-    };
-    return await jellyfin.itemsApi?.getItemsByUserId(params);
-}
-
-function setItemsFromResult(collection: typeof albums, result?: AxiosResponse) {
-    let items = result?.data.Items as BaseItemDto[];
-    if (items && result) {
-        items.forEach((item) => {
-            store.setItem(item.Id, item);
-        });
-        collection.value = result.data.Items;
-    }
-}
-
 let albums = ref<BaseItemDto[]>([]);
-
-function fetchAlbums() {
-    // TODO: add caching
-    fetchChildren(id.value, ["MusicAlbum"])
-        .then((res) => {
-            setItemsFromResult(albums, res);
-        });
-}
-
 let artists = ref<BaseItemDto[]>([]);
-
-function fetchArtists() {
-    jellyfin.artistsApi?.getArtists({
-        userId: jellyfin.userId,
-        parentId: id.value,
-    })
-        .then((res) => {
-            setItemsFromResult(artists, res);
-        });
-}
+let isLoading = ref(false);
 
 function loadCurrentTab() {
+    isLoading.value = true;
     switch (tab.value) {
         case "albums": {
-            fetchAlbums();
+            cache.fetchAlbums(id.value, page.value)
+                .then((res) => {
+                    res.forEach(Object.freeze);
+                    albums.value = res;
+                })
+                .catch()
+                .finally(() => {
+                    isLoading.value = false;
+                });
             break;
         }
         case "artists": {
-            fetchArtists();
+            cache.fetchArtists(id.value, page.value)
+                .then((res) => {
+                    Object.freeze(res);
+                    artists.value = res;
+                })
+                .catch()
+                .finally(() => {
+                    isLoading.value = false;
+                });
             break;
         }
     }
@@ -100,19 +100,24 @@ loadCurrentTab();
             <router-link :to="`/library/${id}/artists`">Artists</router-link>
         </div>
         <div>
-            Page {{ page + 1}}
+            Items {{ range }} / {{ totalCount }}
             <button @click="gotoPage(-1)">back</button>
             <button @click="gotoPage(1)">next</button>
         </div>
-        <div class="albums" v-show="tab == 'albums'">
-            <album-list :albums="albums" />
+        <div v-if="isLoading">
+            <loading-spinner />
         </div>
-        <div class="artists" v-show="tab == 'artists'">
-            <artist-card
-                v-for="(artist, i) in artists"
-                :key="i"
-                :item="artist"
-            />
+        <div v-show="!isLoading">
+            <div class="albums" v-show="tab == 'albums'">
+                <album-list :albums="albums" />
+            </div>
+            <div class="artists" v-show="tab == 'artists'">
+                <artist-card
+                    v-for="(artist, i) in artists"
+                    :key="i"
+                    :item="artist"
+                />
+            </div>
         </div>
         <div class="">
 

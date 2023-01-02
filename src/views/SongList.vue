@@ -77,7 +77,7 @@ function fetchItems() {
 }
 
 watch(
-    () => route.params,
+    id,
     () => {
         fetchCurrentItemList();
         songs.value.length = 0;

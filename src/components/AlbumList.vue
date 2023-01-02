@@ -14,12 +14,14 @@ const props = defineProps({
 <template>
     <div class="album-list">
         <album-card
+            v-memo
             v-for="(album, i) in albums"
             :key="i"
-            :id="album.Id"
             :item="album"
+            :id="album.Id"
             :album-name="album.Name ?? ''"
             :artist-name="album.AlbumArtist ?? ''"
+            :album-artists="album.AlbumArtists ?? []"
         />
     </div>
 </template>

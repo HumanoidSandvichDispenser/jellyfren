@@ -1,11 +1,12 @@
 import { createApp } from "vue";
 import "./style.css";
 import App from "./App.vue";
-//import store from "./store";
 import router from "./router";
 import BootstrapIcon from "@dvuckovic/vue3-bootstrap-icons";
 import { createPinia } from "pinia";
 import { useJellyfinStore } from "./store/jellyfin";
+import VueVirtualScroller from "vue-virtual-scroller";
+import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 
 const pinia = createPinia();
 const app = createApp(App);
@@ -23,6 +24,6 @@ jellyfin.ensureInit()
     }).finally(() => {
         app.use(router)
             .use(BootstrapIcon)
+            .use(VueVirtualScroller)
             .mount("#app");
     });
- 

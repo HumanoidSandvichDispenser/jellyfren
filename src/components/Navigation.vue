@@ -33,8 +33,8 @@ function forward() {
     position: sticky;
     top: 0;
     background-color: var(--bg-nav);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    /*backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);8*/
     z-index: 2;
 }
 

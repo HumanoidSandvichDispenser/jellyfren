@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { computed, ref, Ref } from "vue";
-import LibraryItem from "../components/LibraryItem.vue";
-import { BaseItemDto, BaseItemDtoQueryResult } from "@jellyfin/client-axios";
+import { computed, ref } from "vue";
+import { BaseItemDto } from "@jellyfin/client-axios";
 import { useStore } from "@/store";
 import { useJellyfinStore } from "@/store/jellyfin";
 import router from "@/router";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
+import sizeof from "object-sizeof";
 
 const store = useStore();
 const jellyfin = useJellyfinStore();
@@ -39,6 +38,14 @@ function onLibraryItemClicked(library: BaseItemDto) {
     console.log("Loading library " + library.Id);
     router.push("/library/" + library.Id);
 }
+
+const memory = ref(0);
+
+function recalculate() {
+    let size = sizeof(store.items);
+    console.log(size);
+    memory.value = size;
+}
 </script>
 
 <template>
@@ -57,6 +64,10 @@ function onLibraryItemClicked(library: BaseItemDto) {
         <div class="user-info">
             Logged in as {{ username }}
             <button @click="logout">Log out</button>
+        </div>
+        <div>
+            Memory usage: {{ memory }}
+            <button @click="recalculate">Recalculate</button>
         </div>
     </div>
 </template>
