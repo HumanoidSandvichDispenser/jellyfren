@@ -13,8 +13,11 @@ const props = defineProps({
     isInPlaylist: Boolean,
     isPlaying: Boolean,
     index: Number,
+    showShouldArt: Boolean,
     shouldShowAlbum: Boolean,
 });
+
+const displayIndex = computed(() => props.index ?? props.song.IndexNumber);
 
 const artists = computed(() => {
     if (props.song.Artists) {
@@ -32,17 +35,13 @@ const imageUrl = computed(() => {
 
 <template>
     <tr :class="{ 'song-item': true, 'current': isPlaying }">
-        <td class="song-index" v-if="props.song.IndexNumber && !isInPlaylist">
-            {{ props.song.IndexNumber }}
+        <td class="song-index">
+            <span v-if="displayIndex != undefined && !isInPlaylist">
+                {{ displayIndex }}
+            </span>
         </td>
-        <td class="song-album-art" v-if="isInPlaylist">
-            <!--div class="album-art-bar-container" v-if="isPlaying">
-                <div class="album-art-bar bar-1"></div>
-                <div class="album-art-bar bar-2"></div>
-                <div class="album-art-bar bar-3"></div>
-                <div class="album-art-bar bar-4"></div>
-            </div-->
-            <img :src="imageUrl" />
+        <td class="song-album-art">
+            <img :src="imageUrl" v-if="shouldShowAlbum"/>
         </td>
         <td class="song-info">
             <div class="title">

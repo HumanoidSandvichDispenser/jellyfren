@@ -46,6 +46,8 @@ function recalculate() {
     console.log(size);
     memory.value = size;
 }
+
+const itemCount = computed(() => Object.keys(store.items).length);
 </script>
 
 <template>
@@ -66,7 +68,8 @@ function recalculate() {
             <button @click="logout">Log out</button>
         </div>
         <div>
-            Memory usage: {{ memory }}
+            <div>Memory usage: {{ memory }}</div>
+            <div>Number of items: {{ itemCount }}</div>
             <button @click="recalculate">Recalculate</button>
         </div>
     </div>

@@ -35,10 +35,7 @@ const item = ref<BaseItemDto>({});
 const songs = ref<BaseItemDto[]>([]);
 const isLoading = ref(true);
 
-const playlist = computed({
-    get: (): BaseItemDto[] => store.currentPlaylist,
-    set: (value: BaseItemDto[]) => store.currentPlaylist = value
-});
+const shouldShowAlbum = computed(() => item.value.Type == "Playlist");
 
 function fetchCurrentItemList() {
     jellyfin.userLibraryApi?.getItem({
@@ -157,7 +154,8 @@ fetchItems();
             <song-item
                 v-for="(song, i) in songs"
                 :song="song"
-                :index="i"
+                :index="i + 1"
+                :should-show-album="shouldShowAlbum"
                 @play="playSong(song)"
                 @remove="remove(song)"
                 @add="add(song)"
