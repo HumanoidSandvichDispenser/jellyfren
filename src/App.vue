@@ -1,20 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRoute } from "vue-router";
-import router from "./router";
 import Sidebar from "./components/Sidebar.vue";
 import Navigation from "./components/Navigation.vue";
 import AudioController from "./components/AudioController.vue";
-import { useStore } from "./store";
-import { useJellyfinStore } from "./store/jellyfin";
-
-const route = useRoute();
-
-const store = useStore();
-const jellyfin = useJellyfinStore();
-const isPlaying = computed(() => store.isPlaying);
-
-jellyfin.ensureInit();
 </script>
 
 <template>
