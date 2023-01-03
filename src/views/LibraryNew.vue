@@ -38,7 +38,8 @@ function gotoPage(increment: number) {
     let pageCount = Math.ceil(totalCount.value / settings.itemsPerPage);
     page.value += increment;
     page.value = Math.max(page.value, 0);
-    page.value = Math.min(page.value, pageCount);
+    // pageCount - 1 because page index is zero-based
+    page.value = Math.min(page.value, pageCount - 1);
     loadCurrentTab();
 }
 
