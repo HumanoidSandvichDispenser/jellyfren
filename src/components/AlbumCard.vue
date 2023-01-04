@@ -23,7 +23,7 @@ const artistUrl = computed(() => {
         if (albumArtists.length > 0) {
             const id = props.item.AlbumArtists[0].Id;
             if (id) {
-                return "/library/" + id + "?type=artist";
+                return "/library/" + id;
             }
         }
     }

@@ -6,7 +6,7 @@ export default class Cacheable<T> {
     public constructor(value: T, timeToLive?: number) {
         this.value = value;
         this.cacheTime = new Date().getTime();
-        this.timeToLive = timeToLive ?? 60000;
+        this.timeToLive = timeToLive ?? 300000;
     }
 
     public get isStale(): boolean {

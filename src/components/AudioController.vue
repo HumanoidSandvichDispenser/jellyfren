@@ -100,21 +100,39 @@ setInterval(() => {
         </div>
         <div class="controller-section song-controls">
             <div>
-                <button v-if="isPlaying" @click="pause">Pause</button>
-                <button v-else @click="play">Play</button>
-                <button @click="stop">Stop</button>
-            </div>
-            <div>
                 <progress-slider v-model:value="progress" :max="runTime" />
+            </div>
+            <div class="buttons">
+                <button class="icon-button small">
+                    <bootstrap-icon icon="skip-backward-fill" />
+                </button>
+                <button class="icon-button small">
+                    <bootstrap-icon icon="rewind-fill" />
+                </button>
+                <button class="icon-button" v-if="isPlaying" @click="pause">
+                    <bootstrap-icon icon="pause-circle" />
+                </button>
+                <button class="icon-button" v-else @click="play">
+                    <bootstrap-icon icon="play-circle-fill" />
+                </button>
+                <button class="icon-button" @click="stop">
+                    <bootstrap-icon icon="stop-circle" />
+                </button>
+                <button class="icon-button small">
+                    <bootstrap-icon icon="fast-forward-fill" />
+                </button>
+                <button class="icon-button small">
+                    <bootstrap-icon icon="skip-forward-fill" />
+                </button>
             </div>
         </div>
         <div class="controller-section song-misc">
             <div>
                 <button @click="stop">Favorite</button>
                 <button @click="mute">{{ isMuted ? "Unmute" : "Mute" }}</button>
-            </div>
-            <div>
-                <progress-slider v-model:value="volume" :max="1" :step="0.05" />
+                <div>
+                    <progress-slider v-model:value="volume" :max="1" :step="0.05" />
+                </div>
             </div>
         </div>
     </div>
@@ -125,13 +143,13 @@ setInterval(() => {
     display: flex;
     column-gap: 8px;
     width: 100%;
-    padding: 8px;
 }
 
 .audio-controller > div {
     align-self: center;
     vertical-align: center;
     flex: 1;
+    padding: 8px;
 }
 
 .audio-controller .song-info {
@@ -142,8 +160,19 @@ setInterval(() => {
     align-self: flex-end;
 }
 
-.audio-controller > div > button {
-    margin: 4px;
+.audio-controller .song-controls .buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.audio-controller .song-controls button {
+    font-size: 2.5em;
+    margin: 4px 8px;
+    vertical-align: middle;
+}
+
+.audio-controller .song-controls button.small {
+    font-size: 1.5em;
 }
 
 .audio-controller .song-misc {

@@ -91,6 +91,22 @@ function loadCurrentTab() {
 }
 
 loadCurrentTab();
+
+function playSong(song: BaseItemDto) {
+    store.currentPlaylist.push(song);
+    store.playSong(song);
+}
+
+function add(song: BaseItemDto) {
+    store.currentPlaylist.push(song);
+}
+
+function remove(song: BaseItemDto) {
+    const index = store.currentPlaylist.indexOf(song);
+    if (index > -1) {
+        store.removeFromPlaylist(index);
+    }
+}
 </script>
 
 <template>
@@ -113,11 +129,24 @@ loadCurrentTab();
                 <album-list :albums="albums" />
             </div>
             <div class="artists" v-show="tab == 'artists'">
-                <artist-card
-                    v-for="(artist, i) in artists"
-                    :key="i"
-                    :item="artist"
-                />
+                <div class="artist-list">
+                    <artist-card
+                        v-for="(artist, i) in artists"
+                        :key="i"
+                        :item="artist"
+                    />
+                </div>
+            </div>
+            <div class="songs" v-show="tab == 'songs'">
+                <!--song-item
+                    v-for="(song, i) in songs"
+                    :song="song"
+                    :index="i + 1"
+                    should-show-album
+                    @play="playSong(song)"
+                    @remove="remove(song)"
+                    @add="add(song)"
+                /-->
             </div>
         </div>
         <div class="">
@@ -132,6 +161,14 @@ loadCurrentTab();
 }
 
 .library > div {
+    display: flex;
+    flex-direction: row;
+    column-gap: 16px;
+    row-gap: 16px;
+    flex-wrap: wrap;
+}
+
+.artist-list {
     display: flex;
     flex-direction: row;
     column-gap: 16px;

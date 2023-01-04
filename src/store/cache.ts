@@ -50,6 +50,7 @@ export const useCacheStore = defineStore("cache", () => {
                 // clear cache if count has changed
                 albumCache.value.length = 0;
             }
+            Object.freeze(res);
             albumCache.value[page] = res.data.Items;
             albumCache.updateCacheTime();
             return res.data.Items;
@@ -87,6 +88,7 @@ export const useCacheStore = defineStore("cache", () => {
             if (hasCountChanged) {
                 artistsCache.value.length = 0;
             }
+            Object.freeze(res);
             artistsCache.value[page] = res.data.Items;
             artistsCache.updateCacheTime();
             return res.data.Items;

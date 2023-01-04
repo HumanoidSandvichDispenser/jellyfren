@@ -37,6 +37,7 @@ function removeByIndex(index: number) {
             <template #item="{ element, index }">
                 <song-item
                     :song="element"
+                    :index="index + 1"
                     :is-playing="element.Id == currentSong.Id"
                     is-in-playlist
                     should-show-album
@@ -49,7 +50,7 @@ function removeByIndex(index: number) {
 </template>
 
 <style>
-.now-playing {
+.now-playing h1 {
     padding: 16px;
 }
 

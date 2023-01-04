@@ -36,12 +36,12 @@ const imageUrl = computed(() => {
 <template>
     <tr :class="{ 'song-item': true, 'current': isPlaying }">
         <td class="song-index">
-            <span v-if="displayIndex != undefined && !isInPlaylist">
+            <span v-if="displayIndex != undefined">
                 {{ displayIndex }}
             </span>
         </td>
-        <td class="song-album-art">
-            <img :src="imageUrl" v-if="shouldShowAlbum"/>
+        <td class="song-album-art" v-if="shouldShowAlbum">
+            <img :src="imageUrl" />
         </td>
         <td class="song-info">
             <div class="title">
@@ -49,7 +49,7 @@ const imageUrl = computed(() => {
             </div>
             <div class="artist">{{ artists }}</div>
         </td>
-        <td class="song-album-title">
+        <td class="song-album-title" v-if="shouldShowAlbum">
             <div v-if="shouldShowAlbum">{{ props.song.Album }}</div>
         </td>
         <td class="divider">
