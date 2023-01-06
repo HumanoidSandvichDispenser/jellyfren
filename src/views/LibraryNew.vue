@@ -111,20 +111,28 @@ function remove(song: BaseItemDto) {
 
 <template>
     <div class="library">
-        <div>{{ tab }}</div>
-        <div>
-            <router-link :to="`/library/${id}/albums`">Albums</router-link>
-            <router-link :to="`/library/${id}/artists`">Artists</router-link>
+        <div class="tabs">
+            <router-link :to="`/library/${id}/albums`">
+                <strong>Albums</strong>
+            </router-link>
+            <router-link :to="`/library/${id}/artists`">
+                <strong>Artists</strong>
+            </router-link>
         </div>
-        <div>
-            Items {{ range }} / {{ totalCount }}
-            <button @click="gotoPage(-1)">back</button>
-            <button @click="gotoPage(1)">next</button>
+        <div class="page-navigation">
+            <span class="range">{{ range }}</span>
+            <span class="total-count"> / {{ totalCount }}</span>
+            <button class="icon-button" @click="gotoPage(-1)">
+                <bootstrap-icon icon="arrow-left" />
+            </button>
+            <button class="icon-button" @click="gotoPage(1)">
+                <bootstrap-icon icon="arrow-right" />
+            </button>
         </div>
         <div v-if="isLoading">
             <loading-spinner />
         </div>
-        <div v-show="!isLoading">
+        <div class="library-frame" v-show="!isLoading">
             <div class="albums" v-show="tab == 'albums'">
                 <album-list :albums="albums" />
             </div>
@@ -160,7 +168,15 @@ function remove(song: BaseItemDto) {
     padding: 16px;
 }
 
-.library > div {
+.tabs {
+    display: flex;
+    flex-direction: row;
+    column-gap: 16px;
+    row-gap: 16px;
+    flex-wrap: wrap;
+}
+
+.library-frame {
     display: flex;
     flex-direction: row;
     column-gap: 16px;
@@ -174,5 +190,26 @@ function remove(song: BaseItemDto) {
     column-gap: 16px;
     row-gap: 16px;
     flex-wrap: wrap;
+}
+
+.page-navigation {
+    vertical-align: middle;
+}
+
+.page-navigation .icon-button {
+    margin: 8px;
+    font-size: 1em;
+}
+
+.page-navigation .icon-button svg {
+    stroke-width: 8px;
+}
+
+.page-navigation .range {
+    font-weight: 600;
+}
+
+.page-navigation .total-count {
+    color: var(--fg2);
 }
 </style>

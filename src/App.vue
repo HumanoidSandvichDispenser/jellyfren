@@ -149,6 +149,10 @@ a:visited:hover {
     text-decoration: underline;
 }
 
+a.router-link-active {
+    color: var(--accent);
+}
+
 ::-webkit-scrollbar {
     width: 12px;
 }
