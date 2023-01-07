@@ -34,8 +34,8 @@ export const useCacheStore = defineStore("cache", () => {
             parentId,
             sortBy: ["SortName"],
             albumArtistIds: [],
-            limit: settings.itemsPerPage,
-            startIndex: page * settings.itemsPerPage,
+            limit: settings.preferences.itemsPerPage,
+            startIndex: page * settings.preferences.itemsPerPage,
         });
 
         let hasCountChanged: boolean = false;

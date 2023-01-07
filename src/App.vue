@@ -19,7 +19,6 @@ import AudioController from "./components/AudioController.vue";
 
 <style>
 :root {
-    /*--bg-dark: #0a0b0b;*/
     --bg-dark: #0d1117;
     --bg0: #161b22;
     --bg-nav: #161b22aa;
@@ -32,7 +31,6 @@ import AudioController from "./components/AudioController.vue";
     --orange: #faa356;
     --yellow: #ffdc8f;
     --green: #7ce38b;
-    /*--cyan: #a2d2fb;*/
     --blue: #77bdfb;
     --magenta: #cea5fb;
     --accent: var(--magenta);
