@@ -74,6 +74,7 @@ aside.sidebar {
     flex-grow: 0;
     flex-shrink: 0;
     background-color: var(--bg-dark);
+    overflow-y: auto;
 }
 
 aside.sidebar.open {
