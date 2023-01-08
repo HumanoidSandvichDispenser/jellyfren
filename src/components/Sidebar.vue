@@ -40,7 +40,10 @@ const isOpen = ref(false);
             <div>
                 <router-link
                     v-for="library in libraries"
-                    :to="'/library/' + library.Id"
+                    :to="{
+                        name: 'Library',
+                        params: { id: library.Id }
+                    }"
                 >
                     <button>
                         <span class="icon">
@@ -54,7 +57,10 @@ const isOpen = ref(false);
             <div>
                 <router-link
                     v-for="playlist in playlists"
-                    :to="'/list/' + playlist.Id"
+                    :to="{
+                        name: 'List',
+                        params: { id: playlist.Id }
+                    }"
                 >
                     <button>
                         <span class="icon">
@@ -70,7 +76,6 @@ const isOpen = ref(false);
 
 <style>
 aside.sidebar {
-    flex-basis: 8px;
     flex-grow: 0;
     flex-shrink: 0;
     background-color: var(--bg-dark);
