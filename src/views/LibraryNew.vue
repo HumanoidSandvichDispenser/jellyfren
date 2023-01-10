@@ -24,6 +24,17 @@ const id = computed(() => route.params["id"] as string);
 const tab = computed(() => route.params["tab"] as string);
 const page = ref(0);
 
+let library = ref<BaseItemDto>({ });
+
+function fetchLibrary() {
+    cache.fetchItem(id).then((item) => {
+        library.value = item;
+    });
+}
+
+const title = computed(() =>
+    library.value.Name ?? "Loading...");
+
 const totalCount = computed(() => {
     switch (tab.value) {
         case "albums":
@@ -52,6 +63,7 @@ const range = computed(() => {
 });
 
 watch(tab, (newTab, oldTab) => {
+    fetchLibrary();
     loadCurrentTab();
     page.value = 0;
 });
@@ -90,6 +102,7 @@ function loadCurrentTab() {
     }
 }
 
+fetchLibrary();
 loadCurrentTab();
 
 function playSong(song: BaseItemDto) {
@@ -111,6 +124,7 @@ function remove(song: BaseItemDto) {
 
 <template>
     <div class="library">
+        <h1>{{ title }}</h1>
         <div class="tabs">
             <router-link :to="`/library/${id}/albums`">
                 <strong>Albums</strong>

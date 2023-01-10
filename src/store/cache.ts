@@ -5,7 +5,7 @@ import {
 } from "@jellyfin/client-axios";
 import { AxiosResponse } from "axios";
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { reactive, ref, Ref } from "vue";
 import Cacheable from "../cacheable";
 import { useJellyfinStore } from "./jellyfin";
 import { useSettingsStore } from "./settings";
@@ -97,10 +97,45 @@ export const useCacheStore = defineStore("cache", () => {
         return Promise.reject();
     }
 
+    type ItemCache = { [id: string]: Cacheable<BaseItemDto> };
+    const itemCache: ItemCache = { };
+
+    async function fetchItem(
+        id: string
+    ): Promise<BaseItemDto> {
+        const ttl = 3600 * 1000;
+
+        async function request() {
+            let res = await jellyfin.userLibraryApi?.getItem({
+                userId: jellyfin.userId,
+                itemId: id
+            });
+
+            if (res?.data) {
+                Object.freeze(res.data);
+                itemCache[id] = new Cacheable<BaseItemDto>(itemCache, ttl);
+                return res.data;
+            }
+
+            return Promise.reject();
+        }
+
+        if (id in itemCache) {
+            if (itemCache[id].isStale) {
+                return request();
+            }
+
+            return itemCache[id].value;
+        }
+
+        return request();
+    }
+
     return {
         albumCount,
         fetchAlbums,
         artistCount,
         fetchArtists,
+        fetchItem,
     };
 });

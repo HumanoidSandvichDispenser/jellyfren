@@ -9,6 +9,11 @@ import AudioController from "./components/AudioController.vue";
         <sidebar />
         <main>
             <navigation />
+            <!--router-view v-slot="{ Component, route }">
+                <Transition name="fade">
+                    <component :is="Component" :key="route.path" />
+                </Transition>
+            </router-view-->
             <router-view />
         </main>
     </div>
@@ -70,6 +75,14 @@ body,
     overflow-y: auto;
 }
 
+.v-enter-active,
+.v-leave-active {
+    transition: opacity 0.5s ease;
+}
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
+}
 body {
     height: 100vh;
     overflow: hidden;

@@ -77,6 +77,7 @@ export const useStore = defineStore("store", () => {
         playSong(currentPlaylist.value[index + 1]);
     }
 
+    // TODO: replace this with cache.itemCache
     const items = ref<{ [id: string]: BaseItemDto }>({ });
     const libraries = ref<BaseItemDto[]>([]);
     const playlists = ref<BaseItemDto[]>([]);
