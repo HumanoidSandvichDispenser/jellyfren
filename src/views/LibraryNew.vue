@@ -27,7 +27,8 @@ const page = ref(0);
 let library = ref<BaseItemDto>({ });
 
 function fetchLibrary() {
-    cache.fetchItem(id).then((item) => {
+    library.value = { };
+    cache.fetchItem(id.value).then((item) => {
         library.value = item;
     });
 }
@@ -62,10 +63,17 @@ const range = computed(() => {
     return `${min} - ${max}`;
 });
 
-watch(tab, (newTab, oldTab) => {
+watch(id, (newId, oldId) => {
+    page.value = 0;
     fetchLibrary();
     loadCurrentTab();
+    //tab.value = "albums";
+});
+
+watch(tab, (newTab, oldTab) => {
     page.value = 0;
+    fetchLibrary();
+    loadCurrentTab();
 });
 
 let albums = ref<BaseItemDto[]>([]);
@@ -73,6 +81,8 @@ let artists = ref<BaseItemDto[]>([]);
 let isLoading = ref(false);
 
 function loadCurrentTab() {
+    albums.value = [];
+    artists.value = [];
     isLoading.value = true;
     switch (tab.value) {
         case "albums": {

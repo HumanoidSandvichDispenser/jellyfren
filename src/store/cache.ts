@@ -14,16 +14,27 @@ export const useCacheStore = defineStore("cache", () => {
     const jellyfin = useJellyfinStore();
     const settings = useSettingsStore();
 
-    const albumCache = new Cacheable<BaseItemDto[][]>([]);
+    type LibraryCache = Cacheable<BaseItemDto[][]>
+    //const albumCache = new Cacheable<Library>([]);
+    //const albumCache = new Cacheable<Library>([]);
+    const albumCache: { [parentId: string]: LibraryCache } = { };
+    // TODO: fix albumCount by having an object to hold different counts
     const albumCount = ref(0);
 
     async function fetchAlbums(
         parentId: string,
         page: number
     ): Promise<BaseItemDto[]> {
-        if (!albumCache.isStale) {
-            if (albumCache.value[page]) {
-                return albumCache.value[page];
+        if (!(parentId in albumCache)) {
+            albumCache[parentId] = new Cacheable<BaseItemDto[][]>([]);
+            albumCache[parentId].kill();
+        }
+
+        const albums = albumCache[parentId];
+
+        if (!albums.isStale) {
+            if (albums.value[page]) {
+                return albums.value[page];
             }
         }
 
@@ -48,11 +59,14 @@ export const useCacheStore = defineStore("cache", () => {
         if (res?.data.Items) {
             if (hasCountChanged) {
                 // clear cache if count has changed
-                albumCache.value.length = 0;
+                albums.value.length = 0;
             }
             Object.freeze(res);
-            albumCache.value[page] = res.data.Items;
-            albumCache.updateCacheTime();
+            //albumCache.value[page] = res.data.Items;
+            //albumCache.updateCacheTime();
+            // set the current page to the result
+            albums.value[page] = res.data.Items;
+            albums.updateCacheTime();
             return res.data.Items;
         }
 
@@ -113,7 +127,7 @@ export const useCacheStore = defineStore("cache", () => {
 
             if (res?.data) {
                 Object.freeze(res.data);
-                itemCache[id] = new Cacheable<BaseItemDto>(itemCache, ttl);
+                itemCache[id] = new Cacheable<BaseItemDto>(res.data, ttl);
                 return res.data;
             }
 
