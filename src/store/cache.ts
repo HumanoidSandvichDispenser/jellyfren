@@ -73,16 +73,23 @@ export const useCacheStore = defineStore("cache", () => {
         return Promise.reject();
     }
 
-    const artistsCache = new Cacheable<BaseItemDto[][]>([]);
-    const artistCount = ref(0);
+    const artistCache: { [parentId: string]: LibraryCache } = { };
+    const artistCounts: { [albumId: string]: number } = reactive({ });
 
     async function fetchArtists(
         parentId: string,
         page: number
     ): Promise<BaseItemDto[]> {
-        if (!artistsCache.isStale) {
-            if (artistsCache.value) {
-                return artistsCache.value[page];
+        if (!(parentId in artistCache)) {
+            artistCache[parentId] = new Cacheable<BaseItemDto[][]>([]);
+            artistCache[parentId].kill();
+        }
+
+        let artists = artistCache[parentId];
+
+        if (!artists.isStale) {
+            if (artists.value) {
+                return artists.value[page];
             }
         }
 
@@ -94,17 +101,17 @@ export const useCacheStore = defineStore("cache", () => {
         let hasCountChanged = false;
 
         if (res?.data.TotalRecordCount) {
-            hasCountChanged = artistCount.value != res.data.TotalRecordCount;
-            artistCount.value = res.data.TotalRecordCount;
+            hasCountChanged = artistCounts[parentId] != res.data.TotalRecordCount;
+            artistCounts[parentId] = res.data.TotalRecordCount;
         }
 
         if (res?.data.Items) {
             if (hasCountChanged) {
-                artistsCache.value.length = 0;
+                artists.value.length = 0;
             }
             Object.freeze(res);
-            artistsCache.value[page] = res.data.Items;
-            artistsCache.updateCacheTime();
+            artists.value[page] = res.data.Items;
+            artists.updateCacheTime();
             return res.data.Items;
         }
 
@@ -148,7 +155,7 @@ export const useCacheStore = defineStore("cache", () => {
     return {
         albumCounts,
         fetchAlbums,
-        artistCount,
+        artistCounts,
         fetchArtists,
         fetchItem,
     };

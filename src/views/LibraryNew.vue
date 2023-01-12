@@ -41,7 +41,7 @@ const totalCount = computed(() => {
         case "albums":
             return cache.albumCounts[id.value] ?? 0;
         case "artists":
-            return cache.artistCount;
+            return cache.artistCounts[id.value] ?? 0;
     }
     return 0;
 });
