@@ -18,8 +18,7 @@ export const useCacheStore = defineStore("cache", () => {
     //const albumCache = new Cacheable<Library>([]);
     //const albumCache = new Cacheable<Library>([]);
     const albumCache: { [parentId: string]: LibraryCache } = { };
-    // TODO: fix albumCount by having an object to hold different counts
-    const albumCount = ref(0);
+    const albumCounts: { [albumId: string]: number } = reactive({ });
 
     async function fetchAlbums(
         parentId: string,
@@ -52,8 +51,9 @@ export const useCacheStore = defineStore("cache", () => {
         let hasCountChanged: boolean = false;
         
         if (res?.data.TotalRecordCount) {
-            hasCountChanged = albumCount.value != res.data.TotalRecordCount;
-            albumCount.value = res.data.TotalRecordCount;
+            hasCountChanged = albumCounts[parentId] !=
+                res.data.TotalRecordCount;
+            albumCounts[parentId] = res.data.TotalRecordCount;
         }
 
         if (res?.data.Items) {
@@ -146,7 +146,7 @@ export const useCacheStore = defineStore("cache", () => {
     }
 
     return {
-        albumCount,
+        albumCounts,
         fetchAlbums,
         artistCount,
         fetchArtists,

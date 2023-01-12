@@ -39,7 +39,7 @@ const title = computed(() =>
 const totalCount = computed(() => {
     switch (tab.value) {
         case "albums":
-            return cache.albumCount;
+            return cache.albumCounts[id.value] ?? 0;
         case "artists":
             return cache.artistCount;
     }
