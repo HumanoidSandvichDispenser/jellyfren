@@ -73,6 +73,14 @@ function pause() {
     store.pause();
 }
 
+function toggle() {
+    if (isPlaying.value) {
+        pause();
+    } else {
+        play();
+    }
+}
+
 function stop() {
     store.stop();
 }
@@ -109,12 +117,12 @@ setInterval(() => {
                 <button class="icon-button small">
                     <bootstrap-icon icon="rewind-fill" />
                 </button>
-                <button class="icon-button" v-if="isPlaying" @click="pause">
-                    <bootstrap-icon icon="pause-circle" />
+                <button class="icon-button" @click="toggle">
+                    <bootstrap-icon icon="pause-circle" v-if="isPlaying" />
+                    <bootstrap-icon icon="play-circle-fill" v-else />
                 </button>
-                <button class="icon-button" v-else @click="play">
-                    <bootstrap-icon icon="play-circle-fill" />
-                </button>
+                <!--button class="icon-button" v-else @click="play">
+                </button-->
                 <button class="icon-button" @click="stop">
                     <bootstrap-icon icon="stop-circle" />
                 </button>
