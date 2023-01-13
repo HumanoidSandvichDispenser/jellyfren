@@ -68,6 +68,7 @@ export const useJellyfinStore = defineStore("jellyfin", {
             this.accessToken = configuration.apiKey;
 
             await this.fetchUserId();
+            await this.fetchAll();
             console.log("Found user id");
             console.log(this.userId);
         },
@@ -166,6 +167,11 @@ export const useJellyfinStore = defineStore("jellyfin", {
                 this.userId = res.data.Id;
                 this.username = res.data.Name;
             }
+        },
+
+        async fetchAll() {
+            await this.fetchLibraries();
+            await this.fetchPlaylists();
         },
 
         async fetchLibraries() {
