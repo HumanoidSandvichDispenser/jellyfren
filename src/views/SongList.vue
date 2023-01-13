@@ -35,7 +35,7 @@ const item = ref<BaseItemDto>({});
 const songs = ref<BaseItemDto[]>([]);
 const isLoading = ref(true);
 
-const shouldShowAlbum = computed(() => item.value.Type == "Playlist");
+const isPlaylist = computed(() => item.value.Type == "Playlist");
 
 function fetchCurrentItemList() {
     jellyfin.userLibraryApi?.getItem({
@@ -117,32 +117,38 @@ fetchItems();
                 <div class="name">
                     {{ name }}
                 </div>
+                <div class="artist-name">
+                    <span v-if="!isPlaylist">
+                        <router-link
+                            v-for="(artist, i) in artists"
+                            :key="i"
+                            :to="'/library/' + artist.Id + '?type=artist'"
+                        >
+                            <span v-if="i > 0">, </span>{{ artist.Name }}
+                        </router-link>
+                    </span>
+                </div>
                 <div class="subdetails">
-                    <router-link
-                        v-for="(artist, i) in artists"
-                        :key="i"
-                        :to="'/library/' + artist.Id + '?type=artist'"
-                    >
-                        <span v-if="i > 0">, </span>{{ artist.Name }}
-                    </router-link>
                     <span class="other" v-if="item.ProductionYear">
-                        &middot; {{ item.ProductionYear }}
+                        <bootstrap-icon icon="calendar" />
+                        {{ item.ProductionYear }}
                     </span>
                     <span
                         class="other"
                         v-if="item.Genres && item.Genres.length > 0"
                     >
-                        &middot; {{ item.Genres.join(", ") }}
+                        <bootstrap-icon icon="disc" />
+                        {{ item.Genres.join(", ") }}
                     </span>
                     <span
                         class="other"
                         v-if="item.Tags && item.Tags.length > 0"
                     >
-                        &middot; {{ item.Tags.join(", ") }}
+                        <bootstrap-icon icon="tag" />
+                        {{ item.Tags.join(", ") }}
                     </span>
-                </div>
-                <div class="subdetails">
                     <span class="other" v-if="item.ChildCount">
+                        <bootstrap-icon icon="music-note-list" />
                         {{ item.ChildCount }}
                         {{ item.ChildCount > 1 ? "songs" : "song" }}
                     </span>
@@ -155,7 +161,7 @@ fetchItems();
                 v-for="(song, i) in songs"
                 :song="song"
                 :index="i + 1"
-                :should-show-album="shouldShowAlbum"
+                :should-show-album="isPlaylist"
                 @play="playSong(song)"
                 @remove="remove(song)"
                 @add="add(song)"
@@ -203,9 +209,11 @@ fetchItems();
 
 .list-info .details {
     padding-left: 16px;
-    display: flex;
-    flex-direction: column;
-    align-content: flex-end;
+}
+
+.list-info .details .artist-name {
+    font-weight: 700;
+    margin-bottom: 8px;
 }
 
 .list-info .details .name {
@@ -217,5 +225,15 @@ fetchItems();
 
 .list-info .details .other {
     color: var(--fg2);
+}
+
+.list-info .details .other svg.bi {
+    margin-right: 0.25em;
+}
+
+.list-info .subdetails {
+    display: flex;
+    flex-direction: row;
+    column-gap: 24px;
 }
 </style>

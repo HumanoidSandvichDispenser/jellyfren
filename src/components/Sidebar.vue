@@ -8,7 +8,7 @@ const store = useStore();
 
 const libraries = computed(() => store.libraries);
 const playlists = computed(() => store.playlists);
-const isOpen = ref(false);
+const isOpen = ref(true);
 </script>
 
 <template>
@@ -64,7 +64,7 @@ const isOpen = ref(false);
                 >
                     <button>
                         <span class="icon">
-                            <bootstrap-icon icon="collection-play-fill" />
+                            <bootstrap-icon icon="music-note-list" />
                         </span>
                         <span class="text">{{ playlist.Name }}</span>
                     </button>
