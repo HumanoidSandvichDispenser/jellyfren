@@ -27,7 +27,7 @@ const artistUrl = computed(() => {
             }
         }
     }
-    return "/";
+    return "";
 });
 
 const imageUrl = computed(() => {

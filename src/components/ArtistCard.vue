@@ -19,7 +19,7 @@ const name = computed(() => props.item.Name ?? "");
 const url = computed(() => {
     const id = props.item.Id;
     if (id) {
-        return "/artist/" + id;
+        return "/library/" + id;
     }
     return "/";
 });
