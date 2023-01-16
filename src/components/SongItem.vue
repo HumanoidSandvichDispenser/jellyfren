@@ -30,6 +30,10 @@ const imageUrl = computed(() => {
     const baseUrl = jellyfin.configuration.basePath;
     return `${baseUrl}/Items/${id}/Images/Primary?fillWidth=128`;
 });
+
+const isFavorite = computed(() => {
+    return props.song.UserData?.IsFavorite ?? true;
+})
 </script>
 
 <template>
@@ -57,9 +61,6 @@ const imageUrl = computed(() => {
             <button @click="$emit('play')" class="icon-button">
                 <bootstrap-icon icon="play-circle-fill" />
             </button>
-            <button class="icon-button">
-                <bootstrap-icon icon="heart-fill" />
-            </button>
             <button
                 v-if="isInPlaylist"
                 @click="$emit('remove')"
@@ -69,6 +70,18 @@ const imageUrl = computed(() => {
             </button>
             <button v-else @click="$emit('add')" class="icon-button">
                 <bootstrap-icon icon="plus-circle-fill" />
+            </button>
+            <button
+                :class="{
+                    'icon-button': true,
+                    'is-favorite': isFavorite,
+                }"
+            >
+                <span v-if="isFavorite">
+                    <bootstrap-icon  class="hover" icon="heartbreak-fill" />
+                    <bootstrap-icon icon="heart-fill" class="normal" />
+                </span>
+                <bootstrap-icon v-else icon="heart-fill" />
             </button>
         </td>
     </tr>
@@ -97,7 +110,6 @@ const imageUrl = computed(() => {
 }
 
 .song-item .song-actions {
-    opacity: 0;
     transition-duration: 200ms;
     padding: 8px 16px;
 }
@@ -107,7 +119,32 @@ const imageUrl = computed(() => {
     transition-duration: 200ms;
 }
 
-.song-item:hover .song-actions {
+.song-item .song-actions > button.is-favorite {
+    opacity: unset;
+    color: var(--accent);
+}
+
+.song-item .song-actions > button {
+    opacity: 0;
+}
+
+.song-item .song-actions > button .hover {
+    display: none;
+}
+
+.song-item .song-actions > button .normal {
+    display: unset;
+}
+
+.song-item .song-actions > button:hover .hover {
+    display: unset;
+}
+
+.song-item .song-actions > button:hover .normal {
+    display: none;
+}
+
+.song-item:hover .song-actions > button {
     opacity: 1;
     transition-duration: 200ms;
 }
