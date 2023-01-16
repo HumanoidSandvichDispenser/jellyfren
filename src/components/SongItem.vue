@@ -13,7 +13,6 @@ const props = defineProps({
     isInPlaylist: Boolean,
     isPlaying: Boolean,
     index: Number,
-    showShouldArt: Boolean,
     shouldShowAlbum: Boolean,
 });
 

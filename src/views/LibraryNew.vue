@@ -158,6 +158,7 @@ function remove(song: BaseItemDto) {
         </div>
         <div class="library-frame" v-show="!isLoading">
             <div class="albums" v-show="tab == 'albums'">
+                <!-- TODO: replace this with a vertical list -->
                 <album-list :albums="albums" />
             </div>
             <div class="artists" v-show="tab == 'artists'">
