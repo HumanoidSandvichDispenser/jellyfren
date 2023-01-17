@@ -14,6 +14,19 @@ const props = defineProps({
 
 const url = computed(() => "/list/" + props.album.Id);
 
+const artistUrl = computed(() => {
+    if (props.album.AlbumArtists) {
+        const albumArtists = props.album.AlbumArtists;
+        if (albumArtists.length > 0) {
+            const id = props.album.AlbumArtists[0].Id;
+            if (id) {
+                return "/library/" + id;
+            }
+        }
+    }
+    return "";
+});
+
 const imageUrl = computed(() => {
     const id = props.album.Id;
     const baseUrl = jellyfin.configuration.basePath;
@@ -35,7 +48,10 @@ const imageUrl = computed(() => {
         </td>
         <td class="artist">
             <span>
-                {{ props.album.AlbumArtist }}
+                <!-- TODO: link to EVERY album artist -->
+                <router-link :to="artistUrl">
+                    {{ props.album.AlbumArtist }}
+                </router-link>
             </span>
         </td>
     </tr>
