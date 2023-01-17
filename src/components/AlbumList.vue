@@ -25,6 +25,9 @@ const props = defineProps({
             :album-artists="album.AlbumArtists ?? []"
         /-->
         <table cellspacing="0">
+            <th></th>
+            <th>Album</th>
+            <th>Artist</th>
             <album-item
                 v-memo
                 v-for="(album, i) in albums"

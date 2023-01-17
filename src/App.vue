@@ -164,6 +164,13 @@ a.router-link-active {
     color: var(--accent);
 }
 
+th {
+    padding: 8px;
+    text-align: left;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
 ::-webkit-scrollbar {
     width: 12px;
 }
