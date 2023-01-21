@@ -25,6 +25,13 @@ const artists = computed(() => {
     return props.song.AlbumArtist;
 });
 
+const albumUrl = computed(() => {
+    if (props.song.AlbumId) {
+        return "/list/" + props.song.AlbumId;
+    }
+    return "";
+});
+
 const imageUrl = computed(() => {
     const id = props.song.AlbumId;
     const baseUrl = jellyfin.configuration.basePath;
@@ -42,12 +49,6 @@ onMounted(() => {
         isFavorite.value = props.song.UserData?.IsFavorite ?? false;
     }
 });
-
-/*
-const isFavorite = computed(() => {
-    return props.song.UserData?.IsFavorite ?? true;
-});
-*/
 
 function favorite() {
     if (isFavorite.value) {
@@ -89,7 +90,9 @@ function favorite() {
             <div class="artist">{{ artists }}</div>
         </td>
         <td class="song-album-title" v-if="shouldShowAlbum">
-            <div v-if="shouldShowAlbum">{{ props.song.Album }}</div>
+            <router-link v-if="shouldShowAlbum" :to="albumUrl">
+                {{ props.song.Album }}
+            </router-link>
         </td>
         <td class="divider">
         </td>

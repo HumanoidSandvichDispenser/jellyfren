@@ -68,7 +68,6 @@ function fetchItems() {
                 });
                 songs.value = res.data.Items;
             }
-            console.log(res.data);
         }
     });
 }
@@ -119,13 +118,17 @@ fetchItems();
                 </div>
                 <div class="artist-name">
                     <span v-if="!isPlaylist">
-                        <router-link
+                        <span
                             v-for="(artist, i) in artists"
                             :key="i"
-                            :to="'/library/' + artist.Id + '?type=artist'"
                         >
-                            <span v-if="i > 0">, </span>{{ artist.Name }}
-                        </router-link>
+                            <span v-if="i > 0">, </span>
+                            <router-link
+                                :to="'/library/' + artist.Id + '?type=artist'"
+                            >
+                                {{ artist.Name }}
+                            </router-link>
+                        </span>
                     </span>
                 </div>
                 <div class="subdetails">
