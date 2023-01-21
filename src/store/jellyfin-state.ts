@@ -35,4 +35,4 @@ export default interface JellyfinState {
     audioApi?: AudioApi;
     universalAudioApi?: UniversalAudioApi;
     artistsApi?: ArtistsApi;
-};;;;;;;;;;;;;;;;;;;;;
+};

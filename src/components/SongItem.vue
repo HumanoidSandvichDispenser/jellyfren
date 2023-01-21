@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, PropType } from "vue";
+import { computed, PropType, watch } from "vue";
 import { BaseItemDto } from "@jellyfin/client-axios";
 import { useJellyfinStore } from "../store/jellyfin";
 
@@ -33,7 +33,30 @@ const imageUrl = computed(() => {
 
 const isFavorite = computed(() => {
     return props.song.UserData?.IsFavorite ?? true;
-})
+});
+
+function favorite() {
+    if (isFavorite.value) {
+        jellyfin.userLibraryApi?.unmarkFavoriteItem(
+            {
+                userId: jellyfin.userId,
+                itemId: props.song.Id ?? "",
+            })
+            .then((response) => {
+                response.data.IsFavorite;
+            });
+    } else {
+        jellyfin.userLibraryApi?.markFavoriteItem(
+            {
+                userId: jellyfin.userId,
+                itemId: props.song.Id ?? "",
+            })
+            .then((response) => {
+                response.data.IsFavorite;
+                console.log(response);
+            });
+    }
+}
 </script>
 
 <template>
@@ -76,6 +99,7 @@ const isFavorite = computed(() => {
                     'icon-button': true,
                     'is-favorite': isFavorite,
                 }"
+                @click="favorite"
             >
                 <span v-if="isFavorite">
                     <bootstrap-icon  class="hover" icon="heartbreak-fill" />
