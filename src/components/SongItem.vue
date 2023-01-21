@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, PropType, watch } from "vue";
+import { computed, onMounted, PropType, ref, watch } from "vue";
 import { BaseItemDto } from "@jellyfin/client-axios";
 import { useJellyfinStore } from "../store/jellyfin";
 
@@ -31,9 +31,23 @@ const imageUrl = computed(() => {
     return `${baseUrl}/Items/${id}/Images/Primary?fillWidth=128`;
 });
 
+const isFavorite = ref(false);
+
+watch(props.song, (song) => {
+    isFavorite.value = song.UserData?.IsFavorite ?? false;
+});
+
+onMounted(() => {
+    if (props.song) {
+        isFavorite.value = props.song.UserData?.IsFavorite ?? false;
+    }
+});
+
+/*
 const isFavorite = computed(() => {
     return props.song.UserData?.IsFavorite ?? true;
 });
+*/
 
 function favorite() {
     if (isFavorite.value) {
@@ -43,7 +57,7 @@ function favorite() {
                 itemId: props.song.Id ?? "",
             })
             .then((response) => {
-                response.data.IsFavorite;
+                isFavorite.value = response.data.IsFavorite ?? false;
             });
     } else {
         jellyfin.userLibraryApi?.markFavoriteItem(
@@ -52,8 +66,7 @@ function favorite() {
                 itemId: props.song.Id ?? "",
             })
             .then((response) => {
-                response.data.IsFavorite;
-                console.log(response);
+                isFavorite.value = response.data.IsFavorite ?? false;
             });
     }
 }
