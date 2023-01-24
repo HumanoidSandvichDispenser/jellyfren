@@ -5,9 +5,11 @@ import {
     ArtistsApi,
     AudioApi,
     Configuration,
+    ItemFields,
     ItemsApi,
     LibraryApi,
     SessionApi,
+    SortOrder,
     UniversalAudioApi,
     UserApi,
     UserLibraryApi,
@@ -204,6 +206,8 @@ export const useJellyfinStore = defineStore("jellyfin", {
                 userId: this.userId,
                 includeItemTypes: ["Playlist"],
                 recursive: true,
+                fields: [ItemFields.SortName],
+                sortBy: ["SortName"],
             });
 
             if (res?.data.Items) {
